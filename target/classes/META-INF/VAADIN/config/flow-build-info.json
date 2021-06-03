@@ -1,0 +1,9 @@
+{
+  "compatibilityMode": false,
+  "productionMode": false,
+  "npmFolder": "C:\\Users\\jsgonzalez\\Documents\\ProyectoPersonal\\vaadin-bank",
+  "generatedFolder": "C:\\Users\\jsgonzalez\\Documents\\ProyectoPersonal\\vaadin-bank\\target\\frontend",
+  "frontendFolder": "C:\\Users\\jsgonzalez\\Documents\\ProyectoPersonal\\vaadin-bank\\frontend",
+  "pnpm.enable": false,
+  "require.home.node": false
+}
