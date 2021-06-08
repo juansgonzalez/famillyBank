@@ -1,5 +1,7 @@
 package com.juanseb.bank.components;
 
+import java.text.DecimalFormat;
+
 import com.github.appreciated.card.ClickableCard;
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Usuario;
@@ -54,7 +56,8 @@ public class CardUsuario extends ClickableCard{
         }else {
         	saldo = usuario.getSaldo();
         }
-        saldoSpan.add(saldo +" €");
+        DecimalFormat df = new DecimalFormat("#,###.##");
+        saldoSpan.add(df.format(saldo) +" €");
         saldoSpan.getElement().getStyle().set("color", "#D01E69");
         saldoSpan.getElement().getStyle().set("font-weight", "bold");
         saldoLayout.add(saldoSpan);
