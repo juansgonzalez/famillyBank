@@ -219,7 +219,7 @@ public class InicioView extends HorizontalLayout {
         		LocalDate fechaFin = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), diaFinalMes);
         		
         		// Obtenemos la lista de movimientos del mes actual para la cuenta actual y los gastos y los ingresos del mes
-        		List<Movimiento> movimientosMes =  this.movimientoService.obtenerMovimientoFechaCuenta(idCuenta,fechaInit,fechaFin);
+        		List<Movimiento> movimientosMes =  this.movimientoService.obtenerMovimientoFechaCuentaByUsuario(idCuenta,usuarioActual.getId(),fechaInit,fechaFin);
         		double gastosMes = Utils.obtenerGastos(movimientosMes); 
         		double ingresosMes = Utils.obtenerIngresos(movimientosMes); 
         		DecimalFormat df = new DecimalFormat("#.##");
