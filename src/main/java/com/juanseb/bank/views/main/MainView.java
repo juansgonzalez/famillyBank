@@ -50,6 +50,9 @@ public class MainView extends AppLayout {
 
     private Tabs menu;
     private H1 viewTitle;
+    
+    private List<Cuenta> listaCuentasUsuario;
+    private Usuario usuario;
 
     private UsuarioService usuarioService;
     private CuentaService cuentaService;
@@ -65,10 +68,11 @@ public class MainView extends AppLayout {
         Optional<Usuario> user = Utils.getCurrentUser(this.usuarioService);
         
         if(user.isPresent()) {
-        	List<Cuenta> listaCuentasUsuario = this.cuentaService.obtenerTodasCuentasByUsuarioId(user.get().getId());
+        	this.usuario = user.get();
+        	listaCuentasUsuario = this.cuentaService.obtenerTodasCuentasByUsuarioId(user.get().getId());
         	if(UI.getCurrent().getSession().getAttribute("idCuenta") == null) {
         		if(listaCuentasUsuario.size() > 1) {
-        			cuentaSelect = new CuentaSelectComponent(listaCuentasUsuario);
+        			cuentaSelect = new CuentaSelectComponent(listaCuentasUsuario,user.get().getNombreCompleto());
         			cuentaSelect.open();
         			
         			cuentaSelect.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
@@ -177,6 +181,7 @@ public class MainView extends AppLayout {
     		viewTitle.setText(getCurrentPageTitle());    		
     	}
     }
+    
 
     private Optional<Tab> getTabForComponent(Component component) {
         return menu.getChildren().filter(tab -> ComponentUtil.getData(tab, Class.class).equals(component.getClass()))
@@ -198,6 +203,24 @@ public class MainView extends AppLayout {
         contextMenu.setOpenOnClick(true);
         contextMenu.setTarget(hl);
 
+        contextMenu.addItem("Cambiar Cuenta", e -> {
+        	cuentaSelect = new CuentaSelectComponent(listaCuentasUsuario,usuario.getNombreCompleto());
+			cuentaSelect.open();
+			
+			cuentaSelect.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
+				
+				@Override
+				public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
+					if(!event.isOpened()) { // Check if the form was closed
+						UI.getCurrent().getSession().setAttribute("idCuenta", cuentaSelect.getCuenta().getId());     
+						UI.getCurrent().getSession().setAttribute("idUsuarioPrincipal", cuentaSelect.getCuenta().getUsuarioPrincipal().getId());     
+						UI.getCurrent().getPage().reload();
+					}
+					
+				}
+			});
+        });
+        
         contextMenu.addItem("Logout", e -> {
             contextMenu.getUI().ifPresent(ui -> ui.getPage().setLocation("/logout"));
         });

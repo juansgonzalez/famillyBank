@@ -1,25 +1,24 @@
 package com.juanseb.bank.components;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import com.juanseb.bank.backend.model.Cuenta;
-import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.data.provider.ListDataProvider;
 
 public class CuentaSelectComponent extends Dialog{
-	
+
+	private static final long serialVersionUID = -8925013148024248375L;
+
 	private Grid<Cuenta> grid;
 	
 	private Cuenta cuenta = null;
 	
-	public CuentaSelectComponent(List<Cuenta> listaCuentas) {
+	public CuentaSelectComponent(List<Cuenta> listaCuentas, String nombreUsuario) {
 		super();
 		setWidth("70%");
 		setCloseOnEsc(false);
@@ -32,7 +31,10 @@ public class CuentaSelectComponent extends Dialog{
 			cuenta = event.getItem();
 			this.close();
 		});
-		add(new H2("Seleccione la cuenta a la que quiere acceder:"),grid);
+		
+		
+		
+		add(new H1("Hola "+ nombreUsuario +" :"), new H2("Seleccione la cuenta a la que quiere acceder:"),grid);
 	}
 
     /**
@@ -44,11 +46,9 @@ public class CuentaSelectComponent extends Dialog{
 		grid.setWidthFull();
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER,GridVariant.LUMO_ROW_STRIPES);
 		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		
+		grid.addColumn(c -> c.getUsuarioPrincipal().getNombreCorto()).setHeader("Usuario Principal").setFlexGrow(1);
 		grid.addColumn(c -> c.getIban()).setHeader("Iban").setFlexGrow(1);
         grid.addColumn(c -> c.getSaldo()).setHeader("Saldo").setFlexGrow(1);
-//        grid.addColumn(c -> dateFormat.format(c.getFechaCreacion())).setHeader("Fecha Creacion").setWidth("250px").setFlexGrow(0);
 
         return grid;
 	}
