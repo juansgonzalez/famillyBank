@@ -159,7 +159,7 @@ public class MainView extends AppLayout {
 
     private Component[] createMenuItems() {
         return new Tab[]{createTab("Inicio", InicioView.class,true),
-                createTab("Usuarios", UsuariosView.class,Utils.isPrincipal(getCurrentUser().get(),idUsuarioPrincipal)),
+                createTab("Usuarios", UsuariosView.class,Utils.isPrincipal(getCurrentUser().get())),
                 createTab("Tarjetas", TarjetasView.class,true),
                 createTab("Movimientos", MovimientosView.class,true)
         };

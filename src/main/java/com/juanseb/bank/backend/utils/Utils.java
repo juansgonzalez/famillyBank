@@ -14,6 +14,7 @@ import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.UsuarioService;
+import com.vaadin.flow.component.UI;
 
 public class Utils {
 	
@@ -101,7 +102,8 @@ public class Utils {
 		
 	}
 	
-	public static Boolean isPrincipal(Usuario usuario, Long idUsuarioPrincipal) {
+	public static Boolean isPrincipal(Usuario usuario) {
+		Long idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
         if(usuario.getId().equals(idUsuarioPrincipal)) {
         	return true;
         }else {

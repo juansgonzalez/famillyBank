@@ -25,7 +25,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 
 public class TarjetaDialog extends Dialog{
-	
+
+	private static final long serialVersionUID = -4191342611264243074L;
+
 	@Autowired
 	private TarjetaService tarjetaService;
 
@@ -46,28 +48,22 @@ public class TarjetaDialog extends Dialog{
 	
 	private TextField tarjetaCuentaIban;
 	
-	private Long idUsuarioPrincipal;
-	
-	
-
-
 	
 	public TarjetaDialog(MovimientoService movimientoService, TarjetaService tarjetaService,Usuario usuarioActual,Long idTarjeta) {
 		super();
 		this.movimientoService = movimientoService;
 		this.tarjetaService = tarjetaService;
 		this.usuarioActual = usuarioActual;
-		this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
 		
-		if(Utils.isPrincipal(usuarioActual,idUsuarioPrincipal)) {
-			this.movimientosList = movimientoService.obtenerMovimientosDeTarjeta(idTarjeta);			
+		if(Utils.isPrincipal(usuarioActual)) {
+			this.movimientosList =this.movimientoService.obtenerMovimientosDeTarjeta(idTarjeta);			
 		}else {
-			this.movimientosList = movimientoService.obtenerMovimientosDeTarjetaByUsuario(idTarjeta,this.usuarioActual.getId());
+			this.movimientosList = this.movimientoService.obtenerMovimientosDeTarjetaByUsuario(idTarjeta,this.usuarioActual.getId());
 		}
 		setCloseOnEsc(true);
 		setWidth("50%");
 
-		tarjeta = tarjetaService.obtenerTarjetaById(idTarjeta);
+		tarjeta = this.tarjetaService.obtenerTarjetaById(idTarjeta);
 		
 		createFormTarjeta();
 		createGrid();
@@ -121,7 +117,7 @@ public class TarjetaDialog extends Dialog{
 		.setWidth("100px").setHeader("Tarjeta").setFlexGrow(1);
 		grid.addColumn(c -> c.getCantidad()+" €").setHeader("Cantidad").setFlexGrow(1);
         grid.addColumn(c -> c.getConcepto()).setHeader("Concepto").setFlexGrow(1);
-        if(Utils.isPrincipal(usuarioActual,idUsuarioPrincipal)) {
+        if(Utils.isPrincipal(usuarioActual)) {
         	grid.addColumn(c -> c.getUsuario().getNombreCorto()).setHeader("Usuario").setFlexGrow(1);        	
         }
         grid.addColumn(c -> dateFormat.format(c.getFecha())).setHeader("Fecha").setWidth("125px").setFlexGrow(0);

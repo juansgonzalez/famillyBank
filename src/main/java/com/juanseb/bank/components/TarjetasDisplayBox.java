@@ -25,7 +25,7 @@ public class TarjetasDisplayBox extends ClickableCard {
 
 	public TarjetasDisplayBox(Tarjeta tarjeta,Usuario usuarioActual, MovimientoService movimientoService,TarjetaService tarjetaService) {
 //		super();
-		super(componentEvent -> new TarjetaDialog(movimientoService, tarjetaService, usuarioActual ,tarjeta.getId()).open()); // TODO implementar click tarjeta especifica
+		super(componentEvent -> new TarjetaDialog(movimientoService, tarjetaService, usuarioActual ,tarjeta.getId()).open());
 		this.movimientoService = movimientoService;
 		
 		this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
@@ -47,24 +47,16 @@ public class TarjetasDisplayBox extends ClickableCard {
         icon.add(imgLogo1);
 
         layout.add(icon);
-//        Span bancoEntidad = new Span("Ingenia Bank");
-//        bancoEntidad.getElement().getStyle().set("font-family", "DM Sans");
-//        bancoEntidad.getElement().getStyle().set("font-weight", "bold");
-//        bancoEntidad.getElement().getStyle().set("color", "#090A25");
-//        layout.add(bancoEntidad);
         
       
         DecimalFormat df = new DecimalFormat("#,###.##");
         Span saldoTexto = new Span();
-        saldoTexto.getElement().getStyle().set("color", "#D01E69");
-        if(Utils.isPrincipal(usuarioActual,idUsuarioPrincipal)) {
-        	saldoTexto.add(df.format(tarjeta.getCuenta().getSaldo())+" €");        	
-        }else {
-        	saldoTexto.add(df.format(usuarioActual.getSaldo())+" €");        	        	
-        }
+        saldoTexto.getElement().getStyle().set("color", "#D01E69");    
+    	saldoTexto.add(df.format(usuarioActual.getSaldo())+" €");        	        	
         saldoTexto.getElement().getStyle().set("font-weight", "bold");
-        layout.setHorizontalComponentAlignment(Alignment.CENTER,
-        		saldoTexto);
+        saldoTexto.getElement().getStyle().set("font-size", "1.5em");
+        
+        layout.setHorizontalComponentAlignment(Alignment.CENTER,saldoTexto);
         layout.add(saldoTexto);
 
         

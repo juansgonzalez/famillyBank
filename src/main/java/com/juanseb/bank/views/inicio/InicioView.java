@@ -67,8 +67,6 @@ import com.vaadin.flow.router.RouteAlias;
 public class InicioView extends HorizontalLayout {
 	
 	private long idCuenta;
-	
-	private long idUsuarioPrincipal;
 
 	private Grid<Movimiento> grid;
 	
@@ -113,7 +111,6 @@ public class InicioView extends HorizontalLayout {
 		if(UI.getCurrent().getSession().getAttribute("idCuenta") != null && UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal") != null) {
 			
 			this.idCuenta = (long) UI.getCurrent().getSession().getAttribute("idCuenta");
-			this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
 			usuarioActual = user.get();
 			
 			// Creamos el layout de la parte izquierda
@@ -149,7 +146,7 @@ public class InicioView extends HorizontalLayout {
 			createGrid();
 			List<Movimiento> listaMovimientos = null;
 			cuentaActual = cuentaService.obtenerCuentaById(idCuenta);
-			if(Utils.isPrincipal(usuarioActual,idUsuarioPrincipal)) {
+			if(Utils.isPrincipal(usuarioActual)) {
 				listaMovimientos = this.movimientoService.obtenerMovimientosDeCuentaOrdenadosFecha(idCuenta);
 				
 			}else {
@@ -248,7 +245,7 @@ public class InicioView extends HorizontalLayout {
 		.setWidth("100px").setHeader("Tarjeta").setFlexGrow(1);
 		grid.addColumn(c -> c.getCantidad()+" €").setHeader("Cantidad").setFlexGrow(1);
         grid.addColumn(c -> c.getConcepto()).setHeader("Concepto").setFlexGrow(1);
-        if(Utils.isPrincipal(usuarioActual, idUsuarioPrincipal)) {
+        if(Utils.isPrincipal(usuarioActual)) {
         	grid.addColumn(c -> c.getUsuario().getNombreCorto()).setHeader("Usuario").setFlexGrow(1);        	
         }
         grid.addColumn(c -> dateFormat.format(c.getFecha())).setHeader("Fecha").setWidth("125px").setFlexGrow(0);
@@ -293,7 +290,7 @@ public class InicioView extends HorizontalLayout {
         int diaFinalMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         
         List<Movimiento> movimientos = new ArrayList<>();
-        if(Utils.isPrincipal(usuarioActual, idUsuarioPrincipal)) {
+        if(Utils.isPrincipal(usuarioActual)) {
         	 movimientos = this.movimientoService.obtenerMovimientoFechaCuenta(idCuenta, LocalDate.of(LocalDate.now().getYear(),LocalDate.now().getMonthValue(),1),
 					LocalDate.of(LocalDate.now().getYear(),LocalDate.now().getMonthValue(), diaFinalMes));
 			
