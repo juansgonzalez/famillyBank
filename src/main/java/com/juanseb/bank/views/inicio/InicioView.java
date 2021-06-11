@@ -19,7 +19,6 @@ import com.github.appreciated.apexcharts.ApexChartsBuilder;
 import com.github.appreciated.apexcharts.config.builder.ChartBuilder;
 import com.github.appreciated.apexcharts.config.builder.DataLabelsBuilder;
 import com.github.appreciated.apexcharts.config.builder.LegendBuilder;
-import com.github.appreciated.apexcharts.config.builder.ResponsiveBuilder;
 import com.github.appreciated.apexcharts.config.builder.StrokeBuilder;
 import com.github.appreciated.apexcharts.config.builder.YAxisBuilder;
 import com.github.appreciated.apexcharts.config.chart.Type;
@@ -29,7 +28,6 @@ import com.github.appreciated.apexcharts.config.legend.Position;
 import com.github.appreciated.apexcharts.config.stroke.Curve;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.juanseb.bank.backend.model.Categoria;
-import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Tarjeta;
 import com.juanseb.bank.backend.model.TipoMovimiento;
@@ -41,19 +39,17 @@ import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.TarjetaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
-import com.juanseb.bank.components.*;
+import com.juanseb.bank.components.Divider;
+import com.juanseb.bank.components.IconoMovimientoTarjeta;
+import com.juanseb.bank.components.TarjetasDisplayBox;
+import com.juanseb.bank.components.TitleWithLink;
 import com.juanseb.bank.views.main.MainView;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.dialog.GeneratedVaadinDialog;
-import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -66,6 +62,8 @@ import com.vaadin.flow.router.RouteAlias;
 @PageTitle("Inicio")
 public class InicioView extends HorizontalLayout {
 	
+	private static final long serialVersionUID = 1020762775083832422L;
+
 	private long idCuenta;
 
 	private Grid<Movimiento> grid;
@@ -82,12 +80,8 @@ public class InicioView extends HorizontalLayout {
 	@Autowired
 	private UsuarioService usuarioService;
 	
-	@Autowired
-	private CuentaService cuentaService;
 	
 	private Usuario usuarioActual;
-	
-	private Cuenta cuentaActual;
 	
 	private String[] fechasDiagrama;
 	
@@ -96,7 +90,6 @@ public class InicioView extends HorizontalLayout {
 	
 	public InicioView(CuentaService cuentaService, UsuarioService usuarioService, TarjetaService tarjetaService,MovimientoService movimientoService,CategoriaService categoriaService) {
 		// Iicializamos los services
-		this.cuentaService = cuentaService;
 		this.movimientoService = movimientoService;
 		this.tarjetaService =  tarjetaService;
 		this.categoriaService = categoriaService;
@@ -145,7 +138,6 @@ public class InicioView extends HorizontalLayout {
 			// Creamos el layout para los movimientos
 			createGrid();
 			List<Movimiento> listaMovimientos = null;
-			cuentaActual = cuentaService.obtenerCuentaById(idCuenta);
 			if(Utils.isPrincipal(usuarioActual)) {
 				listaMovimientos = this.movimientoService.obtenerMovimientosDeCuentaOrdenadosFecha(idCuenta);
 				
