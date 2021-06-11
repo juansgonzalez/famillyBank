@@ -3,10 +3,8 @@ package com.juanseb.bank.views.form;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Usuario;
-import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.components.IconoMovimientoTarjeta;
@@ -22,6 +20,8 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.SortDirection;
 
 public class UsuarioDialog extends Dialog{
+	
+	private static final long serialVersionUID = -8693423721484026173L;
 	
 	private UsuarioService usuarioService;
     private MovimientoService movimientoService;
@@ -41,9 +41,10 @@ public class UsuarioDialog extends Dialog{
         super();
         this.movimientoService = movimientoService;
         this.usuarioService = usuarioService;
-        this.usuario = usuarioService.obtenerUsuarioById(idUsuario).get();
+        
+        this.usuario = this.usuarioService.obtenerUsuarioById(idUsuario).get();
 
-    	this.movimientosList = movimientoService.obtenerMovimientosDeCuentaByUsuarioOrdenadosFecha(idCuenta,idUsuario);        	
+    	this.movimientosList = this.movimientoService.obtenerMovimientosDeCuentaByUsuarioOrdenadosFecha(idCuenta,idUsuario);        	
 
         setCloseOnEsc(true);
         setWidth("50%");
