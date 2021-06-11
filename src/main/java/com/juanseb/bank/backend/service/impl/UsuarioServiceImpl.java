@@ -58,4 +58,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public Usuario saveUpdateUsuario(Usuario usuario) {
 		return usuarioRepositorio.save(usuario);
 	}
+
+	@Override
+	public List<Usuario> obtenerUsuarioByCuenta(Long idCuenta) {
+		return usuarioRepositorio.obtenerUsuariosByCuenta(idCuenta);
+	}
 }

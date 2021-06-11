@@ -8,6 +8,7 @@ import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.components.CardCuenta;
 import com.juanseb.bank.components.CardUsuario;
 import com.juanseb.bank.views.main.MainView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -21,8 +22,9 @@ import java.util.Optional;
 @PageTitle("Usuarios")
 public class UsuariosView extends VerticalLayout {
 
-    private Optional<Usuario> currentUser;
-    private List<Usuario> usuariosList;
+	private static final long serialVersionUID = -6987631109273915138L;
+
+	private List<Usuario> usuariosList;
 
     private CuentaService cuentaService;
     private MovimientoService movimientoService;
@@ -36,9 +38,10 @@ public class UsuariosView extends VerticalLayout {
         this.movimientoService = movimientoService;
         this.cuentaService = cuentaService;
         this.usuarioService = usuarioService;
-        this.currentUser = usuarioService.obtenerUsuarioActualConectado();
-        this.usuariosList = usuarioService.obtenerTodosUsuarios();
-        cuenta = this.cuentaService.obtenerTodasCuentasByUsuarioId(currentUser.get().getId()).get(0);
+        
+        Long idCuenta = (Long) UI.getCurrent().getSession().getAttribute("idCuenta");
+        this.usuariosList = usuarioService.obtenerUsuarioByCuenta(idCuenta);
+        cuenta = this.cuentaService.obtenerCuentaById(idCuenta);
 
         setSizeFull();
 

@@ -23,6 +23,13 @@ public interface UsuarioService {
      */
     public Optional<Usuario> obtenerUsuarioByUsername(String username);
 
+    /**
+     * Obtener usuario de la BD según su cuenta
+     * @param id cuenta
+     * @return
+     */
+    public List<Usuario> obtenerUsuarioByCuenta(Long idCuenta);
+
 
     /**
      * Obtener todos los usuarios de la BD
