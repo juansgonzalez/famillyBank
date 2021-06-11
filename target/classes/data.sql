@@ -6,7 +6,7 @@ INSERT INTO usuario (nombre_completo, nombre_corto, image, saldo ,username, pass
 INSERT INTO cuenta (iban, saldo,usuario_principal) values
     ('ES00 0000 2000 00 0000000000', 3000.0,1)
     ;
-S
+
 INSERT INTO categoria (nombre) values
     ('Ocio'),
     ('Restaurantes'),

@@ -1,4 +1,4 @@
-package com.juanseb.bank.views.cuenta;
+package com.juanseb.bank.views.usuario;
 
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Usuario;

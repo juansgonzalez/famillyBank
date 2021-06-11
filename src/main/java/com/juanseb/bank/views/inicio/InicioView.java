@@ -94,8 +94,6 @@ public class InicioView extends HorizontalLayout {
 	private String[] fechasDiagrama;
 	
 	private Double[] listadoGastosDiariosDiagrama;
-	
-	private CuentaSelectComponent cuentaSelect;
 
 	
 	public InicioView(CuentaService cuentaService, UsuarioService usuarioService, TarjetaService tarjetaService,MovimientoService movimientoService,CategoriaService categoriaService) {
@@ -167,7 +165,7 @@ public class InicioView extends HorizontalLayout {
 			// Añadimos el titulo y el grid para moviminetos a la vista Izquierda
 			leftLayout.add(new TitleWithLink("Movimientos","Ver mas","movimientos"),grid);
 			
-			
+			DecimalFormat df = new DecimalFormat("#.##");
 			
 			// Creamos la parte derecha de la vista
 			VerticalLayout rightLayout = new VerticalLayout();
@@ -180,6 +178,11 @@ public class InicioView extends HorizontalLayout {
 			tituloAnalisis.getElement().getStyle().set("margin-top", "0");
 			tituloAnalisis.getElement().getStyle().set("margin-right", "auto");
 			textAnalisis.add(tituloAnalisis);
+			
+			H2 balance = new H2(df.format(usuarioActual.getSaldo()) + "€");
+			balance.getElement().getStyle().set("margin-top", "0");
+			balance.getElement().getStyle().set("margin-left", "auto");
+			textAnalisis.add(balance);
 			
 			// añadimos el titulo a la parte derecha de la pantalla
 			rightLayout.add(textAnalisis);
@@ -203,7 +206,7 @@ public class InicioView extends HorizontalLayout {
 			List<Movimiento> movimientosMes =  this.movimientoService.obtenerMovimientoFechaCuentaByUsuario(idCuenta,usuarioActual.getId(),fechaInit,fechaFin);
 			double gastosMes = Utils.obtenerGastos(movimientosMes); 
 			double ingresosMes = Utils.obtenerIngresos(movimientosMes); 
-			DecimalFormat df = new DecimalFormat("#.##");
+			
 			
 			Span ingresosMensaual = new Span("Ingresos del mes: "+df.format(ingresosMes)+" €");
 			ingresosMensaual.getElement().getStyle().set("margin-top", "0");
