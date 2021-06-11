@@ -1,12 +1,12 @@
-INSERT INTO usuario (nombre_completo, nombre_corto, rol, image, saldo ,username, password) values
-    ('Juan Sebastian Gonzalez Sanchez','Juan', 'PRINCIPAL', 'jsgs.png', 2874.02,'jsgs', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy'),
-    ('Luis Orlando Gonzalez Martinez', 'Orlando' ,'SECUNDARIO','ogm.png', 70.54, 'ogm', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy')
+INSERT INTO usuario (nombre_completo, nombre_corto, image, saldo ,username, password) values
+    ('Juan Sebastian Gonzalez Sanchez','Juan', 'jsgs.png', 2874.02,'jsgs', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy'),
+    ('Luis Orlando Gonzalez Martinez', 'Orlando', 'ogm.png', 70.54, 'ogm', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy')
     ;
 
 INSERT INTO cuenta (iban, saldo,usuario_principal) values
     ('ES00 0000 2000 00 0000000000', 3000.0,1)
     ;
-
+S
 INSERT INTO categoria (nombre) values
     ('Ocio'),
     ('Restaurantes'),

@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
@@ -100,8 +101,8 @@ public class Utils {
 		
 	}
 	
-	public static Boolean isPrincipal(Usuario usuario) {
-        if("PRINCIPAL".equals(usuario.getRol())) {
+	public static Boolean isPrincipal(Usuario usuario, Long idUsuarioPrincipal) {
+        if(usuario.getId().equals(idUsuarioPrincipal)) {
         	return true;
         }else {
         	return false;

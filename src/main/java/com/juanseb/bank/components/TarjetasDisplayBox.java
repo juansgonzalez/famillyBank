@@ -12,6 +12,7 @@ import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.TarjetaService;
 import com.juanseb.bank.backend.utils.Utils;
 import com.juanseb.bank.views.form.TarjetaDialog;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -20,12 +21,15 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 public class TarjetasDisplayBox extends ClickableCard {
 
 	MovimientoService movimientoService;
+	private Long idUsuarioPrincipal;
 
 	public TarjetasDisplayBox(Tarjeta tarjeta,Usuario usuarioActual, MovimientoService movimientoService,TarjetaService tarjetaService) {
 //		super();
 		super(componentEvent -> new TarjetaDialog(movimientoService, tarjetaService, usuarioActual ,tarjeta.getId()).open()); // TODO implementar click tarjeta especifica
 		this.movimientoService = movimientoService;
 		
+		this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
+
 		// Set some style
 		this.setWidth("255px");
 		this.setHeight("150px");
@@ -53,7 +57,7 @@ public class TarjetasDisplayBox extends ClickableCard {
         DecimalFormat df = new DecimalFormat("#,###.##");
         Span saldoTexto = new Span();
         saldoTexto.getElement().getStyle().set("color", "#D01E69");
-        if(Utils.isPrincipal(usuarioActual)) {
+        if(Utils.isPrincipal(usuarioActual,idUsuarioPrincipal)) {
         	saldoTexto.add(df.format(tarjeta.getCuenta().getSaldo())+" €");        	
         }else {
         	saldoTexto.add(df.format(usuarioActual.getSaldo())+" €");        	        	

@@ -39,8 +39,6 @@ public class Usuario {
     private String image;
     
     private Double saldo;
-    
-    private String rol;
 
     @JsonIgnore
     private String password;
@@ -74,10 +72,9 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String username,String image, String nombreCompleto, String nombreCorto, String rol, Double saldo, String password) {
+    public Usuario(String username,String image, String nombreCompleto, String nombreCorto, Double saldo, String password) {
         this.username = username;
         this.image = image;
-        this.rol = rol;
         this.nombreCompleto = nombreCompleto;
         this.nombreCorto = nombreCorto;
         this.saldo = saldo;
@@ -119,15 +116,6 @@ public class Usuario {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-
-    public String getRol() {
-		return rol;
-	}
-
-	public void setRol(String rol) {
-		this.rol = rol;
-	}
 
 	public String getImage() {
 		return image;

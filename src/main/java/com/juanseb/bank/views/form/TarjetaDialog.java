@@ -14,6 +14,7 @@ import com.juanseb.bank.backend.service.TarjetaService;
 import com.juanseb.bank.backend.utils.Utils;
 import com.juanseb.bank.components.IconoMovimientoTarjeta;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -45,6 +46,8 @@ public class TarjetaDialog extends Dialog{
 	
 	private TextField tarjetaCuentaIban;
 	
+	private Long idUsuarioPrincipal;
+	
 	
 
 
@@ -54,7 +57,9 @@ public class TarjetaDialog extends Dialog{
 		this.movimientoService = movimientoService;
 		this.tarjetaService = tarjetaService;
 		this.usuarioActual = usuarioActual;
-		if(Utils.isPrincipal(usuarioActual)) {
+		this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
+		
+		if(Utils.isPrincipal(usuarioActual,idUsuarioPrincipal)) {
 			this.movimientosList = movimientoService.obtenerMovimientosDeTarjeta(idTarjeta);			
 		}else {
 			this.movimientosList = movimientoService.obtenerMovimientosDeTarjetaByUsuario(idTarjeta,this.usuarioActual.getId());
@@ -116,7 +121,7 @@ public class TarjetaDialog extends Dialog{
 		.setWidth("100px").setHeader("Tarjeta").setFlexGrow(1);
 		grid.addColumn(c -> c.getCantidad()+" €").setHeader("Cantidad").setFlexGrow(1);
         grid.addColumn(c -> c.getConcepto()).setHeader("Concepto").setFlexGrow(1);
-        if(Utils.isPrincipal(usuarioActual)) {
+        if(Utils.isPrincipal(usuarioActual,idUsuarioPrincipal)) {
         	grid.addColumn(c -> c.getUsuario().getNombreCorto()).setHeader("Usuario").setFlexGrow(1);        	
         }
         grid.addColumn(c -> dateFormat.format(c.getFecha())).setHeader("Fecha").setWidth("125px").setFlexGrow(0);

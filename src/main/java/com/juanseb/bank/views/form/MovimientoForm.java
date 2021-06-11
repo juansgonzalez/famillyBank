@@ -15,6 +15,7 @@ import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
 import com.juanseb.bank.views.enums.FORM_ACTION;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -43,7 +44,8 @@ public class MovimientoForm extends Dialog{
 	private Usuario usuarioActual;
 	
 	private Long idCuenta;
-	private Cuenta cuenta;
+	private Long idUsuarioPrincipal;
+	
 	
 	Binder<Movimiento> binder = new BeanValidationBinder<Movimiento>(Movimiento.class);
 
@@ -61,6 +63,8 @@ public class MovimientoForm extends Dialog{
 		setCloseOnEsc(true);
 		setCloseOnOutsideClick(false);
 		
+		this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
+
 		this.usuarioActual = usuarioService.obtenerUsuarioActualConectado().get();
 		this.idCuenta = idCuenta;
     	this.movimientoService = movimientoService;
@@ -186,9 +190,9 @@ public class MovimientoForm extends Dialog{
         usuarioMovimiento.setLabel("Usuario");
         usuarioMovimiento.setItemLabelGenerator(Usuario::getNombreCorto);
         usuarioMovimiento.setItems(this.usuarioService.obtenerTodosUsuarios());
-        usuarioMovimiento.setRequiredIndicatorVisible(Utils.isPrincipal(this.usuarioActual));
+        usuarioMovimiento.setRequiredIndicatorVisible(Utils.isPrincipal(this.usuarioActual,this.idUsuarioPrincipal));
         usuarioMovimiento.setValue(this.usuarioActual);
-        usuarioMovimiento.setVisible(Utils.isPrincipal(this.usuarioActual));
+        usuarioMovimiento.setVisible(Utils.isPrincipal(this.usuarioActual,this.idUsuarioPrincipal));
         setColspan(usuarioMovimiento, 1);
         binder.forField(usuarioMovimiento).asRequired("El usuario es obligatoria")
         	.bind(Movimiento::getUsuario,Movimiento::setUsuario);

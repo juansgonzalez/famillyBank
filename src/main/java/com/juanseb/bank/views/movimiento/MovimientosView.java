@@ -47,6 +47,7 @@ public class MovimientosView extends VerticalLayout {
     private CuentaService cuentaService;
     
     private Long idCuentaActual;
+    private Long idUsuarioPrincipal;
     
     private Usuario usuarioActual;
 
@@ -60,6 +61,7 @@ public class MovimientosView extends VerticalLayout {
     public MovimientosView(MovimientoService movimientoService, UsuarioService usuarioService,CategoriaService categoriaService,TarjetaService tarjetaService, CuentaService cuentaService){
         addClassName("movimientos-view");
         setPadding(true);
+		this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
 
         this.usuarioService =  usuarioService;
         this.movimientoService = movimientoService;
@@ -70,7 +72,7 @@ public class MovimientosView extends VerticalLayout {
         usuarioActual = this.usuarioService.obtenerUsuarioActualConectado().get();
         
         this.idCuentaActual = (Long) UI.getCurrent().getSession().getAttribute("idCuenta");
-        if(Utils.isPrincipal(this.usuarioActual)) {
+        if(Utils.isPrincipal(this.usuarioActual,this.idUsuarioPrincipal)) {
         	this.movimientosList = this.movimientoService.obtenerMovimientosDeCuentaOrdenadosFecha(this.idCuentaActual);        	
         }else {
         	this.movimientosList = this.movimientoService.obtenerMovimientosDeCuentaByUsuarioOrdenadosFecha(this.idCuentaActual,this.usuarioActual.getId());        	        	
@@ -163,7 +165,7 @@ public class MovimientosView extends VerticalLayout {
 	}
     
 	private void refreshGrid() {
-		if(Utils.isPrincipal(this.usuarioActual)) {
+		if(Utils.isPrincipal(this.usuarioActual,this.idUsuarioPrincipal)) {
         	grid.setDataProvider(new ListDataProvider<>(this.movimientoService.obtenerMovimientosDeCuentaOrdenadosFecha(this.idCuentaActual)));
         }else {
         	grid.setDataProvider(new ListDataProvider<>(this.movimientoService.obtenerMovimientosDeCuentaByUsuarioOrdenadosFecha(this.idCuentaActual,this.usuarioActual.getId())));        	
@@ -198,7 +200,7 @@ public class MovimientosView extends VerticalLayout {
         grid.addColumn(movimiento -> movimiento.getCantidad()+" €").setHeader("Cantidad").setFlexGrow(1).setSortable(true);
         grid.addColumn(movimiento -> movimiento.getConcepto()).setHeader("Concepto").setFlexGrow(1).setSortable(true);
         grid.addColumn(movimiento -> movimiento.getCategoria().getNombre()).setHeader("Categoria").setFlexGrow(1).setSortable(true);
-        if(Utils.isPrincipal(usuarioActual)) {
+        if(Utils.isPrincipal(usuarioActual,this.idUsuarioPrincipal)) {
         	grid.addColumn(movimiento -> movimiento.getUsuario().getNombreCorto()).setHeader("Usuario").setFlexGrow(1).setSortable(true);
         }
         grid.addColumn(movimiento -> dateFormat.format(movimiento.getFecha())).setHeader("Fecha").setWidth("125px").setFlexGrow(0).setSortable(true);
