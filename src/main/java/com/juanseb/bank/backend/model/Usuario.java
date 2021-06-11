@@ -46,6 +46,10 @@ public class Usuario {
     private String password;
 
     // relaciones
+    
+    @OneToMany(mappedBy = "usuarioPrincipal")
+    @JsonIgnore
+    List<Cuenta> cuentasPrincipales = new ArrayList<>();
 
 //    CREATE TABLE `usuario_cuenta` (
 //    		  `usuario_id` bigint NOT NULL,

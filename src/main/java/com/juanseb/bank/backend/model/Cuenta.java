@@ -27,6 +27,10 @@ public class Cuenta {
 
     @Column(nullable = false)
     private Double saldo;
+    
+    @ManyToOne
+    @JoinColumn(name="usuario_principal", nullable = false)
+    private Usuario usuarioPrincipal;
 
     //relaciones
 
@@ -93,4 +97,14 @@ public class Cuenta {
     public void setTarjetas(List<Tarjeta> tarjetas) {
         this.tarjetas = tarjetas;
     }
+
+	public Usuario getUsuarioPrincipal() {
+		return usuarioPrincipal;
+	}
+
+	public void setUsuarioPrincipal(Usuario usuarioPrincipal) {
+		this.usuarioPrincipal = usuarioPrincipal;
+	}
+    
+    
 }

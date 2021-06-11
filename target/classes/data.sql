@@ -3,8 +3,8 @@ INSERT INTO usuario (nombre_completo, nombre_corto, rol, image, saldo ,username,
     ('Luis Orlando Gonzalez Martinez', 'Orlando' ,'SECUNDARIO','ogm.png', 70.54, 'ogm', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy')
     ;
 
-INSERT INTO cuenta (iban, saldo) values
-    ('ES00 0000 2000 00 0000000000', 3000.0)
+INSERT INTO cuenta (iban, saldo,usuario_principal) values
+    ('ES00 0000 2000 00 0000000000', 3000.0,1)
     ;
 
 INSERT INTO categoria (nombre) values
