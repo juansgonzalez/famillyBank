@@ -72,6 +72,7 @@ public class MainView extends AppLayout {
         	listaCuentasUsuario = this.cuentaService.obtenerTodasCuentasByUsuarioId(user.get().getId());
         	if(UI.getCurrent().getSession().getAttribute("idCuenta") == null) {
         		if(listaCuentasUsuario.size() > 1) {
+					UI.getCurrent().getSession().setAttribute("idCuenta", listaCuentasUsuario.get(0).getId());     
         			cuentaSelect = new CuentaSelectComponent(listaCuentasUsuario,user.get().getNombreCompleto());
         			cuentaSelect.open();
         			

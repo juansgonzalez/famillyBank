@@ -8,6 +8,7 @@ import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.repository.UsuarioRepository;
 import com.juanseb.bank.backend.service.UsuarioService;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +62,18 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	public List<Usuario> obtenerUsuarioByCuenta(Long idCuenta) {
+		return usuarioRepositorio.obtenerUsuariosByCuenta(idCuenta);
+	}
+
+	@Override
+	public List<Usuario> obtenerUsuarioFilterUsername(String userName) {
+		userName = "%"+userName+"%";
+		return usuarioRepositorio.obtenerUsuariosFiltradoUserName(userName);
+	}
+
+	@Override
+	public Collection<Usuario> obtenerTodosUsuariosEnCuenta(Long idCuenta) {
+		
 		return usuarioRepositorio.obtenerUsuariosByCuenta(idCuenta);
 	}
 }

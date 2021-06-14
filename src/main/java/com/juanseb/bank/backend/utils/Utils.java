@@ -125,11 +125,15 @@ public class Utils {
 		UsuarioCuentaId uc = new UsuarioCuentaId();
 		uc.setCuenta(c);
 		uc.setUsuario(u);
+		UsuarioCuenta ucObtenido = null;
+		if(usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).isPresent()) {
+			ucObtenido = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();			
+			return ucObtenido.getSaldoEnCuenta();
+		}else {
+			return -1d;
+		}
 		
-		UsuarioCuenta ucObtenido = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc);
 		
-		
-		return ucObtenido.getSaldoEnCuenta();
 	}
 
 }

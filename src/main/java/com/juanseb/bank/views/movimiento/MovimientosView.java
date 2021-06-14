@@ -101,7 +101,7 @@ public class MovimientosView extends VerticalLayout {
 
 
     private void openMovimientoForm() {
-		movimientoForm = new MovimientoForm(idCuentaActual, this.movimientoService, this.categoriaService, this.usuarioService, this.tarjetaService);
+		movimientoForm = new MovimientoForm(idCuentaActual, this.categoriaService, this.usuarioService, this.tarjetaService);
 		
 		movimientoForm.open();
 		
@@ -127,7 +127,7 @@ public class MovimientosView extends VerticalLayout {
 							uc.setCuenta(c);
 							uc.setUsuario(u);
 
-							UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc);
+							UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
 
 							Double saldoActualUsuario = usuarioCuenta.getSaldoEnCuenta();
 

@@ -1,5 +1,6 @@
 package com.juanseb.bank.backend.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,5 +54,11 @@ public interface UsuarioService {
     public Optional<Usuario> obtenerUsuarioActualConectado();
 
     public Usuario saveUpdateUsuario(Usuario usuario);
+
+
+	public List<Usuario> obtenerUsuarioFilterUsername(String value);
+
+
+	public Collection<Usuario> obtenerTodosUsuariosEnCuenta(Long idCuenta);
 
 }

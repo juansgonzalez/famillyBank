@@ -7,8 +7,8 @@ import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.views.main.MainView;
-import com.juanseb.views.components.CardCuenta;
 import com.juanseb.views.components.CardUsuario;
+import com.juanseb.views.components.UsuariosFilter;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
@@ -18,8 +18,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
-
-import javax.swing.plaf.basic.BasicToggleButtonUI;
 
 @Route(value = "usuarios", layout = MainView.class)
 @PageTitle("Usuarios")
@@ -68,7 +66,7 @@ public class UsuariosView extends VerticalLayout {
     }
 
     private void abrirSeleccionadorUsuario() {
-		// TODO Auto-generated method stub
+		new UsuariosFilter(usuarioService, movimientoService, usuarioCuentaService, cuenta).open();
 		
 	}
 

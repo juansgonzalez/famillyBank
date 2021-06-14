@@ -1,5 +1,7 @@
 package com.juanseb.bank.backend.service.impl;
 
+import java.util.Optional;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -19,14 +21,18 @@ public class UsuarioCuentaServiceImpl implements UsuarioCuentaService{
 	}
 
 	@Override
-	public UsuarioCuenta obtenerDatosUsuarioCuenta(UsuarioCuentaId id) {
-		return usuarioCuentaRepository.findById(id).orElseThrow(()
-                -> new EntityNotFoundException("No se encontro datos para el usuario y la cuenta"));
+	public Optional<UsuarioCuenta> obtenerDatosUsuarioCuenta(UsuarioCuentaId id) {
+		return usuarioCuentaRepository.findById(id);
 	}
 
 	@Override
 	public UsuarioCuenta save(UsuarioCuenta usuarioCuenta) {
 		return usuarioCuentaRepository.save(usuarioCuenta);
+	}
+
+	@Override
+	public boolean exist(UsuarioCuentaId id) {
+		return usuarioCuentaRepository.existsById(id);
 	}
 
 }
