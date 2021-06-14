@@ -13,6 +13,9 @@ import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
+import com.juanseb.bank.backend.model.UsuarioCuenta;
+import com.juanseb.bank.backend.model.UsuarioCuentaId;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.vaadin.flow.component.UI;
 
@@ -109,6 +112,24 @@ public class Utils {
         }else {
         	return false;
         }
+	}
+	
+	public static Double obtenerSaldoEnCuenta(Long idCuenta, Long idUsuario, UsuarioCuentaService usuarioCuentaService) {
+		
+		Usuario u = new Usuario();
+		u.setId(idUsuario);
+		
+		Cuenta c = new Cuenta();
+		c.setId(idCuenta);
+		
+		UsuarioCuentaId uc = new UsuarioCuentaId();
+		uc.setCuenta(c);
+		uc.setUsuario(u);
+		
+		UsuarioCuenta ucObtenido = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc);
+		
+		
+		return ucObtenido.getSaldoEnCuenta();
 	}
 
 }

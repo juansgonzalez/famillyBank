@@ -4,11 +4,13 @@ import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.MovimientoService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
-import com.juanseb.bank.components.CardCuenta;
-import com.juanseb.bank.components.CardUsuario;
 import com.juanseb.bank.views.main.MainView;
+import com.juanseb.views.components.CardCuenta;
+import com.juanseb.views.components.CardUsuario;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,7 +18,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
-import java.util.Optional;
+
+import javax.swing.plaf.basic.BasicToggleButtonUI;
 
 @Route(value = "usuarios", layout = MainView.class)
 @PageTitle("Usuarios")
@@ -29,26 +32,47 @@ public class UsuariosView extends VerticalLayout {
     private CuentaService cuentaService;
     private MovimientoService movimientoService;
     private UsuarioService usuarioService;
+    private UsuarioCuentaService usuarioCuentaService;
     
     private Cuenta cuenta;
 
 
-    public UsuariosView(CuentaService cuentaService, MovimientoService movimientoService, UsuarioService usuarioService) {
+    public UsuariosView(CuentaService cuentaService, MovimientoService movimientoService, UsuarioService usuarioService, UsuarioCuentaService usuarioCuentaService) {
 
         this.movimientoService = movimientoService;
         this.cuentaService = cuentaService;
         this.usuarioService = usuarioService;
+        this.usuarioCuentaService = usuarioCuentaService;
         
         Long idCuenta = (Long) UI.getCurrent().getSession().getAttribute("idCuenta");
         this.usuariosList = usuarioService.obtenerUsuarioByCuenta(idCuenta);
         cuenta = this.cuentaService.obtenerCuentaById(idCuenta);
 
         setSizeFull();
-
-        add(new H2("Usuarios"), createCardCuentas());
+        
+        HorizontalLayout title = new HorizontalLayout();
+        title.setWidthFull();
+        title.add(new H2("Usuarios"));
+        Button botonadd = new Button("Agregar Usuario a Cuenta", ClickEvent ->{
+    		abrirSeleccionadorUsuario();
+    	});
+        botonadd.getElement().getStyle().set("margin-left", "auto");
+        botonadd.getElement().getStyle().set("margin-top", "auto");
+        botonadd.getElement().getStyle().set("background-color", "#D01E69");
+        botonadd.getElement().getStyle().set("color", "white");
+        botonadd.getElement().getStyle().set("cursor", "pointer");
+        
+        title.add(botonadd);
+        
+        add(title, createCardCuentas());
     }
 
-    /**
+    private void abrirSeleccionadorUsuario() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
      * Crea un componente de cards con todas las cuentas del usuario. Los cards se muestran en una misma fila hasta llegar a 3,
      * por lo que si hay más de 3 cuentas, se crearán varias filas de cards.
      * @return componente con todas las cuentas en formato card
@@ -64,12 +88,12 @@ public class UsuariosView extends VerticalLayout {
             contador++;
 
             if(contador <= numCardsPerRow){
-                hl.add(new CardUsuario(cuenta,usuario, this.usuarioService, this.movimientoService));
+                hl.add(new CardUsuario(cuenta, usuario, this.usuarioService, this.movimientoService, this.usuarioCuentaService));
             }else{
                 contador = 1;
                 vl.add(hl);
                 hl = new HorizontalLayout();
-                hl.add(new CardCuenta(cuenta, this.cuentaService, this.movimientoService));
+                hl.add(new CardUsuario(cuenta, usuario, this.usuarioService, this.movimientoService,this.usuarioCuentaService));
             }
         }
 

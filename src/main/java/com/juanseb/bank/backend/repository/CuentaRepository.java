@@ -12,7 +12,7 @@ public interface CuentaRepository extends JpaRepository<Cuenta, Long> {
 
 	boolean existsByIban(String iban);
 
-	@Query("select c from Cuenta c join c.usuarios u where u.id = :idUsuario")
+	@Query("select c from Cuenta c join c.usuarios uc where uc.id.usuario.id = :idUsuario")
 	List<Cuenta> obtenerCuentasByUserId(@Param("idUsuario")Long idUsuario);
 
 

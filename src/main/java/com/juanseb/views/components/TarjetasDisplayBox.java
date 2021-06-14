@@ -1,15 +1,13 @@
-package com.juanseb.bank.components;
+package com.juanseb.views.components;
 
 import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.util.List;
 
 import com.github.appreciated.card.ClickableCard;
-import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Tarjeta;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.TarjetaService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.utils.Utils;
 import com.juanseb.bank.views.form.TarjetaDialog;
 import com.vaadin.flow.component.UI;
@@ -20,15 +18,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class TarjetasDisplayBox extends ClickableCard {
 
-	MovimientoService movimientoService;
-	private Long idUsuarioPrincipal;
+	private static final long serialVersionUID = -7764591521651167968L;
 
-	public TarjetasDisplayBox(Tarjeta tarjeta,Usuario usuarioActual, MovimientoService movimientoService,TarjetaService tarjetaService) {
-//		super();
+	
+	public TarjetasDisplayBox(Tarjeta tarjeta,Usuario usuarioActual, MovimientoService movimientoService,TarjetaService tarjetaService, UsuarioCuentaService usuarioCuentaService) {
 		super(componentEvent -> new TarjetaDialog(movimientoService, tarjetaService, usuarioActual ,tarjeta.getId()).open());
-		this.movimientoService = movimientoService;
-		
-		this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
+
+		Long idCuenta = (Long) UI.getCurrent().getSession().getAttribute("idCuenta");
 
 		// Set some style
 		this.setWidth("255px");
@@ -52,7 +48,7 @@ public class TarjetasDisplayBox extends ClickableCard {
         DecimalFormat df = new DecimalFormat("#,###.##");
         Span saldoTexto = new Span();
         saldoTexto.getElement().getStyle().set("color", "#D01E69");    
-    	saldoTexto.add(df.format(usuarioActual.getSaldo())+" €");        	        	
+    	saldoTexto.add(df.format(Utils.obtenerSaldoEnCuenta(idCuenta,usuarioActual.getId(),usuarioCuentaService))+" €");        	        	
         saldoTexto.getElement().getStyle().set("font-weight", "bold");
         saldoTexto.getElement().getStyle().set("font-size", "1.5em");
         

@@ -1,4 +1,4 @@
-package com.juanseb.bank.components;
+package com.juanseb.views.components;
 
 import java.text.DecimalFormat;
 
@@ -7,7 +7,9 @@ import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.MovimientoService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
+import com.juanseb.bank.backend.utils.Utils;
 import com.juanseb.bank.views.form.CuentaDialog;
 import com.juanseb.bank.views.form.UsuarioDialog;
 import com.vaadin.flow.component.UI;
@@ -18,10 +20,12 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class CardUsuario extends ClickableCard{
 	
-	public CardUsuario(Cuenta cuenta,Usuario usuario, UsuarioService usuarioService, MovimientoService movimientoService) {
+	private static final long serialVersionUID = 4194699125726794904L;
+
+	public CardUsuario(Cuenta cuenta,Usuario usuario, UsuarioService usuarioService, MovimientoService movimientoService, UsuarioCuentaService usuarioCuentaService) {
         super(event -> {
             UI.getCurrent().getSession().setAttribute("idCuenta", cuenta.getId());
-            new UsuarioDialog(usuarioService, movimientoService,cuenta.getId(), usuario.getId()).open();
+            new UsuarioDialog(usuarioService, movimientoService,cuenta.getId(), usuario.getId(),usuarioCuentaService).open();
         });
 
         // estilo del card
@@ -50,12 +54,8 @@ public class CardUsuario extends ClickableCard{
         // layout con el saldo de la cuenta
         HorizontalLayout saldoLayout = new HorizontalLayout();
         Span saldoSpan = new Span();
-        Double saldo = 0.0;
-        if(usuario.getSaldo()==null) {
-        	saldo = cuenta.getSaldo();
-        }else {
-        	saldo = usuario.getSaldo();
-        }
+        Double saldo = Utils.obtenerSaldoEnCuenta(cuenta.getId(), usuario.getId(), usuarioCuentaService);
+        
         DecimalFormat df = new DecimalFormat("#,###.##");
         saldoSpan.add(df.format(saldo) +" €");
         saldoSpan.getElement().getStyle().set("color", "#D01E69");

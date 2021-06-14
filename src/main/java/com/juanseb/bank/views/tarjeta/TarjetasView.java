@@ -10,12 +10,13 @@ import com.juanseb.bank.backend.model.Tarjeta;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.TarjetaService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
-import com.juanseb.bank.components.CardCuenta;
-import com.juanseb.bank.components.TarjetasDisplayBox;
 import com.juanseb.bank.views.form.TarjetaDialog;
 import com.juanseb.bank.views.main.MainView;
+import com.juanseb.views.components.CardCuenta;
+import com.juanseb.views.components.TarjetasDisplayBox;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -41,14 +42,19 @@ public class TarjetasView extends VerticalLayout {
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	@Autowired
+private UsuarioCuentaService usuarioCuentaService;
 	private Usuario usuario;
 	
 	private List<Tarjeta> tarjetasList;
 	
-	public TarjetasView(TarjetaService tarjetaService, MovimientoService movimientoService, UsuarioService usuarioService) {
+	public TarjetasView(TarjetaService tarjetaService, MovimientoService movimientoService, UsuarioService usuarioService, UsuarioCuentaService usuarioCuentaService) {
+		
 		this.movimientoService = movimientoService;
 		this.tarjetaService = tarjetaService;
 		this.usuarioService = usuarioService;
+		this.usuarioCuentaService = usuarioCuentaService;
+		
 		Optional<Usuario> user = Utils.getCurrentUser(this.usuarioService);
 		this.usuario = user.get();
 		setSizeFull();
@@ -76,12 +82,12 @@ public class TarjetasView extends VerticalLayout {
             contador++;
 
             if(contador <= numCardsPerRow){
-                hl.add(new TarjetasDisplayBox(tarjeta, usuario, movimientoService, tarjetaService));
+                hl.add(new TarjetasDisplayBox(tarjeta, this.usuario, this.movimientoService, this.tarjetaService, this.usuarioCuentaService));
             }else{
                 contador = 1;
                 vl.add(hl);
                 hl = new HorizontalLayout();
-                hl.add(new TarjetasDisplayBox(tarjeta, usuario, this.movimientoService, this.tarjetaService));
+                hl.add(new TarjetasDisplayBox(tarjeta, this.usuario, this.movimientoService, this.tarjetaService, this.usuarioCuentaService));
             }
         }
 

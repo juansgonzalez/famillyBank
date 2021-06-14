@@ -12,7 +12,7 @@ import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.TarjetaService;
 import com.juanseb.bank.backend.utils.Utils;
-import com.juanseb.bank.components.IconoMovimientoTarjeta;
+import com.juanseb.views.components.IconoMovimientoTarjeta;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dialog.Dialog;

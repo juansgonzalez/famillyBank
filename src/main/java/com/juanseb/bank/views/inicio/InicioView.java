@@ -37,13 +37,14 @@ import com.juanseb.bank.backend.service.CategoriaService;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.TarjetaService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
-import com.juanseb.bank.components.Divider;
-import com.juanseb.bank.components.IconoMovimientoTarjeta;
-import com.juanseb.bank.components.TarjetasDisplayBox;
-import com.juanseb.bank.components.TitleWithLink;
 import com.juanseb.bank.views.main.MainView;
+import com.juanseb.views.components.Divider;
+import com.juanseb.views.components.IconoMovimientoTarjeta;
+import com.juanseb.views.components.TarjetasDisplayBox;
+import com.juanseb.views.components.TitleWithLink;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -64,10 +65,6 @@ public class InicioView extends HorizontalLayout {
 	
 	private static final long serialVersionUID = 1020762775083832422L;
 
-	private long idCuenta;
-
-	private Grid<Movimiento> grid;
-	
 	@Autowired
 	private MovimientoService movimientoService;
 	
@@ -80,20 +77,28 @@ public class InicioView extends HorizontalLayout {
 	@Autowired
 	private UsuarioService usuarioService;
 	
-	
+	@Autowired
+	private UsuarioCuentaService usuarioCuentaService;
+
+	private long idCuenta;
+
 	private Usuario usuarioActual;
 	
 	private String[] fechasDiagrama;
 	
 	private Double[] listadoGastosDiariosDiagrama;
 
+	private Grid<Movimiento> grid;
 	
-	public InicioView(CuentaService cuentaService, UsuarioService usuarioService, TarjetaService tarjetaService,MovimientoService movimientoService,CategoriaService categoriaService) {
+
+	
+	public InicioView(CuentaService cuentaService, UsuarioService usuarioService, TarjetaService tarjetaService,MovimientoService movimientoService,CategoriaService categoriaService, UsuarioCuentaService usuarioCuentaService) {
 		// Iicializamos los services
 		this.movimientoService = movimientoService;
 		this.tarjetaService =  tarjetaService;
 		this.categoriaService = categoriaService;
 		this.usuarioService = usuarioService;
+		this.usuarioCuentaService = usuarioCuentaService;
 		
 		// Configuracion general de la pantalla incio
 		setSizeFull();
@@ -123,7 +128,7 @@ public class InicioView extends HorizontalLayout {
 			
 			// Creamos el card para cada tarjeta hasta un maximo de 3 
 			for (int i = 0; i < listaTarjetas.size() && i < 3; i++) {
-				TarjetasDisplayBox displayTarjeta = new TarjetasDisplayBox(listaTarjetas.get(i),usuarioActual, this.movimientoService, this.tarjetaService);
+				TarjetasDisplayBox displayTarjeta = new TarjetasDisplayBox(listaTarjetas.get(i),usuarioActual, this.movimientoService, this.tarjetaService, this.usuarioCuentaService);
 				layoutTarjetasCredito.add(displayTarjeta);
 			}
 			
@@ -168,7 +173,7 @@ public class InicioView extends HorizontalLayout {
 			tituloAnalisis.getElement().getStyle().set("margin-right", "auto");
 			textAnalisis.add(tituloAnalisis);
 			
-			H2 balance = new H2(df.format(usuarioActual.getSaldo()) + "€");
+			H2 balance = new H2(df.format(Utils.obtenerSaldoEnCuenta(idCuenta, usuarioActual.getId(), usuarioCuentaService)) + "€");
 			balance.getElement().getStyle().set("margin-top", "0");
 			balance.getElement().getStyle().set("margin-left", "auto");
 			textAnalisis.add(balance);
@@ -383,7 +388,8 @@ public class InicioView extends HorizontalLayout {
 		Double[] serieData = new Double[listaCategorias.size()];
 		for (int i = 0; i < listaCategorias.size(); i++) {
 			Categoria categoriaActual = listaCategorias.get(i);
-			serieData[i] = Utils.obtenerGastos(this.movimientoService.obtenerMovimientosCuentaByCategoria(idCuenta,new MovimientoMesFilter("05", categoriaActual.getId())));
+			String mesActual = String.valueOf(LocalDate.now().getMonthValue());
+			serieData[i] = Utils.obtenerGastos(this.movimientoService.obtenerMovimientosCuentaByCategoria(idCuenta,new MovimientoMesFilter(mesActual, categoriaActual.getId())));
 		}
 		serie.setData(serieData);
 		return serieData;

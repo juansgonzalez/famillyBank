@@ -1,13 +1,16 @@
 package com.juanseb.bank.views.form;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.MovimientoService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
-import com.juanseb.bank.components.IconoMovimientoTarjeta;
+import com.juanseb.bank.backend.utils.Utils;
+import com.juanseb.views.components.IconoMovimientoTarjeta;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -25,6 +28,7 @@ public class UsuarioDialog extends Dialog{
 	
 	private UsuarioService usuarioService;
     private MovimientoService movimientoService;
+    private UsuarioCuentaService usuarioCuentaService;
 
     private Grid<Movimiento> grid;
 
@@ -35,12 +39,19 @@ public class UsuarioDialog extends Dialog{
     private FormLayout usuarioData = new FormLayout();
     private TextField nombreUsuario;
     private TextField usuarioSaldo;
+    
+    private Long idCuenta;
+    private Long idUsuario;
 
 
-    public UsuarioDialog(UsuarioService usuarioService, MovimientoService movimientoService,Long idCuenta, Long idUsuario) {
+    public UsuarioDialog(UsuarioService usuarioService, MovimientoService movimientoService,Long idCuenta, Long idUsuario, UsuarioCuentaService usuarioCuentaService) {
         super();
         this.movimientoService = movimientoService;
         this.usuarioService = usuarioService;
+        this.usuarioCuentaService = usuarioCuentaService;
+        
+        this.idCuenta = idCuenta;
+        this.idUsuario = idUsuario;
         
         this.usuario = this.usuarioService.obtenerUsuarioById(idUsuario).get();
 
@@ -50,17 +61,18 @@ public class UsuarioDialog extends Dialog{
         setWidth("50%");
 
 
-        createFormTarjeta();
+        createFormUsuario();
         createGrid();
 
         add(new H3("Datos Cuenta"),usuarioData, new Hr(),new H3("Movimientos"),grid);
 
     }
 
-    private void createFormTarjeta() {
+    private void createFormUsuario() {
+		DecimalFormat df = new DecimalFormat("#.##");
 
-        nombreUsuario = new TextField("Cuenta");
-        nombreUsuario.setId("cuentaIban");
+        nombreUsuario = new TextField("Usuario");
+        nombreUsuario.setId("nombreUsuario");
         nombreUsuario.setEnabled(false);
         nombreUsuario.setValue(usuario.getNombreCompleto());
         setColspan(nombreUsuario, 1);
@@ -68,7 +80,7 @@ public class UsuarioDialog extends Dialog{
         usuarioSaldo = new TextField("Saldo");
         usuarioSaldo.setId("saldo");
         usuarioSaldo.setEnabled(false);
-        usuarioSaldo.setValue(usuario.getSaldo().toString());
+        usuarioSaldo.setValue(df.format(Utils.obtenerSaldoEnCuenta(idCuenta, idUsuario, usuarioCuentaService)));
         setColspan(usuarioSaldo, 1);
 
         usuarioData = new FormLayout(nombreUsuario, usuarioSaldo);

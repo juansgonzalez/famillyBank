@@ -1,4 +1,4 @@
-package com.juanseb.bank.components;
+package com.juanseb.views.components;
 
 import com.vaadin.flow.component.html.Span;
 

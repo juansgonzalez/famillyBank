@@ -6,7 +6,9 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Cuenta {
@@ -34,10 +36,13 @@ public class Cuenta {
 
     //relaciones
 
-    @ManyToMany(mappedBy = "cuentas")
-    @JsonIgnore    // Para evitar en la respuesta json la recursión infinita en relaciones bidireccionales
-    private List<Usuario> usuarios = new ArrayList<>();
+//    @ManyToMany(mappedBy = "cuentas")
+//    @JsonIgnore    // Para evitar en la respuesta json la recursión infinita en relaciones bidireccionales
+//    private List<Usuario> usuarios = new ArrayList<>();
 
+    @OneToMany(mappedBy = "id.cuenta")
+    private Set<UsuarioCuenta> usuarios = new HashSet<UsuarioCuenta>(0);
+    
     @OneToMany(mappedBy = "cuenta")
     @JsonIgnore
     List<Movimiento> movimientos = new ArrayList<>();
@@ -74,15 +79,20 @@ public class Cuenta {
         this.saldo = saldo;
     }
 
-    public List<Usuario> getUsuarios() {
-        return usuarios;
-    }
 
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
-    }
+	public Set<UsuarioCuenta> getUsuarios() {
+		return usuarios;
+	}
 
-    public List<Movimiento> getMovimientos() {
+	public void setUsuarios(Set<UsuarioCuenta> usuarios) {
+		this.usuarios = usuarios;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public List<Movimiento> getMovimientos() {
         return movimientos;
     }
 

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.juanseb.bank.backend.model.Usuario;
+import com.juanseb.bank.backend.model.UsuarioCuentaId;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Boolean existsByUsername(String username);
 
-	@Query("select u from Usuario u join u.cuentas c where c.id = :idCuenta")
+	@Query("select u from Usuario u join u.cuentas uc where uc.id.cuenta.id = :idCuenta")
 	List<Usuario> obtenerUsuariosByCuenta(Long idCuenta);
 
 }
