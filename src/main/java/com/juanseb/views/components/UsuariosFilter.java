@@ -35,8 +35,6 @@ public class UsuariosFilter extends Dialog{
 	private Cuenta cuenta;
 
 	public UsuariosFilter(UsuarioService usuarioService, MovimientoService movimientoService, UsuarioCuentaService usuarioCuentaService, Cuenta cuenta) {
-		this.setCloseOnEsc(false);
-		this.setCloseOnOutsideClick(false);
 		this.setWidth("70%");
 		this.setHeight("70%");
 		
