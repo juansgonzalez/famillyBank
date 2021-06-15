@@ -30,7 +30,9 @@ import com.vaadin.flow.router.Route;
 @Route(value = "tarjetas", layout = MainView.class)
 @PageTitle("Tarjetas")
 public class TarjetasView extends VerticalLayout {
-	
+
+	private static final long serialVersionUID = -3831298199221104449L;
+
 	private Long idCuenta;
 	
 	@Autowired

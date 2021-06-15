@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Tarjeta;
 import com.juanseb.bank.backend.repository.TarjetaRepository;
 import com.juanseb.bank.backend.service.TarjetaService;

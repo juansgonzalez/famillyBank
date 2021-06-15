@@ -2,8 +2,6 @@ package com.juanseb.bank.backend.service.impl;
 
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.stereotype.Service;
 
 import com.juanseb.bank.backend.model.UsuarioCuenta;

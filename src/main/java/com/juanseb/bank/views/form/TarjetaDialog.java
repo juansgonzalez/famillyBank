@@ -14,7 +14,6 @@ import com.juanseb.bank.backend.service.TarjetaService;
 import com.juanseb.bank.backend.utils.Utils;
 import com.juanseb.views.components.IconoMovimientoTarjeta;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
