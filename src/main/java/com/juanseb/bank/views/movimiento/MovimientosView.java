@@ -118,7 +118,7 @@ public class MovimientosView extends VerticalLayout {
 							movimientoEditable = movimientoForm.getMovimiento();
 							
 							Usuario u = new Usuario();
-							u.setId(usuarioActual.getId());
+							u.setId(movimientoEditable.getUsuario().getId());
 
 							Cuenta c = new Cuenta();
 							c.setId(idCuentaActual);
