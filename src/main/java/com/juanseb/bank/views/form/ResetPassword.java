@@ -7,6 +7,7 @@ import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -41,7 +42,7 @@ public class ResetPassword extends Dialog{
 		bCryptPasswordEncoder();
 		inicializarCampos();
 		
-		vl.add(userName, nuevaContrasena, confirmacionContrasena,botonAceptar);
+		vl.add(new H2("Restaurar contraseña"),userName, nuevaContrasena, confirmacionContrasena,botonAceptar);
 		add(vl);
 	}
 
