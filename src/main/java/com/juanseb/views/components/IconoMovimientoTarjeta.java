@@ -8,6 +8,9 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 public class IconoMovimientoTarjeta extends HorizontalLayout{
+
+	private static final long serialVersionUID = 6933916688070651366L;
+
 	public IconoMovimientoTarjeta(Movimiento movimiento) {
 		super();
 		Image img ;

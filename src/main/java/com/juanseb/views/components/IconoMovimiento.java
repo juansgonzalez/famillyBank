@@ -7,7 +7,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 public class IconoMovimiento extends HorizontalLayout{
 
-    public IconoMovimiento(Movimiento movimiento) {
+	private static final long serialVersionUID = 5917663772937816645L;
+
+	public IconoMovimiento(Movimiento movimiento) {
 
         super();
         Image img;

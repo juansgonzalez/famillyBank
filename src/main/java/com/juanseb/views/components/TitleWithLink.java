@@ -6,6 +6,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 public class TitleWithLink extends HorizontalLayout{
 	
+	private static final long serialVersionUID = 4917763576405927796L;
+
 	public TitleWithLink(String titulo, String textoLink, String link) {
 		super();
 		setWidthFull();

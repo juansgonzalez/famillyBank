@@ -8,6 +8,7 @@ import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
+import com.juanseb.bank.views.form.ResetPassword;
 import com.juanseb.bank.views.inicio.InicioView;
 import com.juanseb.bank.views.movimiento.MovimientosView;
 import com.juanseb.bank.views.tarjeta.TarjetasView;
@@ -48,7 +49,9 @@ import com.vaadin.flow.router.PageTitle;
 @Theme(themeFolder = "bankapp")
 public class MainView extends AppLayout {
 
-    private Tabs menu;
+	private static final long serialVersionUID = -2413203481354932959L;
+
+	private Tabs menu;
     private H1 viewTitle;
     
     private List<Cuenta> listaCuentasUsuario;
@@ -77,8 +80,10 @@ public class MainView extends AppLayout {
         			cuentaSelect.open();
         			
         			cuentaSelect.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
-        				
-        				@Override
+
+						private static final long serialVersionUID = 865879469223366604L;
+
+						@Override
         				public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
         					if(!event.isOpened()) { // Check if the form was closed
         						UI.getCurrent().getSession().setAttribute("idCuenta", cuentaSelect.getCuenta().getId());     
@@ -104,6 +109,11 @@ public class MainView extends AppLayout {
                 addToNavbar(true, createHeaderContent());
                 this.menu = createMenu();
                 addToDrawer(createDrawerContent(menu));
+        	}
+        	
+        	if(usuario.isResetearPassword()) {
+        		ResetPassword resetPassword = new ResetPassword(usuario, usuarioService);
+        		resetPassword.open();
         	}
         }
 	
@@ -210,6 +220,9 @@ public class MainView extends AppLayout {
 			
 			cuentaSelect.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
 				
+
+				private static final long serialVersionUID = 5149146040730714784L;
+
 				@Override
 				public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
 					if(!event.isOpened()) { // Check if the form was closed
@@ -257,15 +270,4 @@ public class MainView extends AppLayout {
         }
     }
     
-    private Cuenta getCurrentCuenta() {
-    	Long idCuenta = (long) UI.getCurrent().getSession().getAttribute("idCuenta");
-    	Cuenta cuenta = null;
-    	if(idCuenta == null) {
-    		System.out.println("ERROR OBTENER CUENTA INICIAL");
-    	}else {
-    		cuenta = cuentaService.obtenerCuentaById(idCuenta);    		
-    	}
-    	
-    	return cuenta;
-    }
 }

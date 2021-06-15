@@ -14,7 +14,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class CardCuenta extends ClickableCard {
 
-    public CardCuenta(Cuenta cuenta, CuentaService cuentaService, MovimientoService movimientoService, UsuarioCuentaService usuarioCuentaService) {
+	private static final long serialVersionUID = 9125287369001345638L;
+
+	public CardCuenta(Cuenta cuenta, CuentaService cuentaService, MovimientoService movimientoService, UsuarioCuentaService usuarioCuentaService) {
         super(event -> {
             UI.getCurrent().getSession().setAttribute("idCuenta", cuenta.getId());
             new CuentaDialog(cuentaService, movimientoService, cuenta.getId()).open();

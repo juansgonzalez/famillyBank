@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConfigureUIServiceInitListener implements VaadinServiceInitListener {
 
+	private static final long serialVersionUID = -2331882516293812403L;
+
 	@Override
 	public void serviceInit(ServiceInitEvent event) {
 		event.getSource().addUIInitListener(uiEvent -> {

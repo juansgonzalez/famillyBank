@@ -9,7 +9,9 @@ import com.vaadin.flow.router.Route;
 @Route(value = "cuentas", layout = MainView.class)
 @PageTitle("Cuentas")
 public class CuentasView extends HorizontalLayout{
-	
+
+	private static final long serialVersionUID = -5392137733638473893L;
+
 	public CuentasView() {
 		this.setSizeFull();
 		

@@ -1,8 +1,5 @@
 package com.juanseb.bank.views.login;
 
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,7 +13,10 @@ import com.vaadin.flow.router.Route;
 @PageTitle("Login")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
-    private LoginForm login = new LoginForm(); // Instantiates a LoginForm component to capture username and password
+
+	private static final long serialVersionUID = -7086516434425397958L;
+
+	private LoginForm login = new LoginForm(); // Instantiates a LoginForm component to capture username and password
 
     public LoginView(){
         addClassName("login-view");

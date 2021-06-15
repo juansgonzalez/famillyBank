@@ -10,7 +10,10 @@ import java.util.Collection;
 @Component
 public class MyUserDetails implements UserDetails {
 
-    private Long id;
+
+	private static final long serialVersionUID = -5324462202589406599L;
+
+	private Long id;
     private String username;
     private String password;
     private String nombreCompleto;
