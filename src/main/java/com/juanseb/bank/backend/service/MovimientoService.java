@@ -38,5 +38,7 @@ public interface MovimientoService {
 
 	public List<Movimiento> obtenerMovimientoFechaCuentaByUsuario(Long idCuenta, Long id, LocalDate of, LocalDate of2);
 
+	public List<Movimiento> obtenerMovimientosDeCuentaByCuentaAhorro(Long idCuentaAhorro, LocalDate of, LocalDate of2);
+
 	public Movimiento save(Movimiento movimientoEditable);
 }

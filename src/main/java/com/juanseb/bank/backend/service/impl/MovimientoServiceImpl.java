@@ -286,6 +286,20 @@ public class MovimientoServiceImpl implements MovimientoService {
 		
 	}
 
+	@Override
+	public List<Movimiento> obtenerMovimientosDeCuentaByCuentaAhorro(Long idCuentaAhorro, LocalDate fechaInit, LocalDate fechaFin) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateInit = null;
+		Date datefin = null;
+		try {
+			dateInit = formatter.parse(fechaInit.toString());
+			datefin = formatter.parse(fechaFin.toString());
+		} catch (ParseException e) { 		
+
+		}	
+		return movimientoRepository.obtenerMovimientosDeCuentaByCuentaAhorro(idCuentaAhorro, dateInit, datefin);
+
+	}
 
 
 }
