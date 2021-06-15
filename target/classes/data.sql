@@ -1,7 +1,7 @@
-INSERT INTO usuario (nombre_completo, nombre_corto, image ,username, password) values
-    ('Juan Sebastian Gonzalez Sanchez','Juan', 'jsgs.png', 'jsgs', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy'),
-    ('Luis Orlando Gonzalez Martinez', 'Orlando', 'ogm.png', 'ogm', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy'),
-    ('Luis David Sevillano Yucra', 'David', 'ogm.png', 'dei', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy')
+INSERT INTO usuario (nombre_completo, nombre_corto, image ,username, password,resetear_password) values
+    ('Juan Sebastian Gonzalez Sanchez','Juan', 'jsgs.png', 'jsgs', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy',0),
+    ('Luis Orlando Gonzalez Martinez', 'Orlando', 'ogm.png', 'ogm', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy',0),
+    ('Luis David Sevillano Yucra', 'David', 'ogm.png', 'dei', '$2a$11$TckEYxY/0DPf6OfpQhXKP./hl45UlgXYs0jQFsZZCwBEjUCo7bUKy',0)
     ;
 
 INSERT INTO cuenta (iban, saldo,usuario_principal) values

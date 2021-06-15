@@ -40,6 +40,7 @@ public class Usuario {
     
     private String image;
     
+    private boolean resetearPassword;
 
     @JsonIgnore
     private String password;
@@ -156,6 +157,14 @@ public class Usuario {
 
 	public void setMovimientos(List<Movimiento> movimientos) {
 		this.movimientos = movimientos;
+	}
+
+	public boolean isResetearPassword() {
+		return resetearPassword;
+	}
+
+	public void setResetearPassword(boolean resetearPassword) {
+		this.resetearPassword = resetearPassword;
 	}
     
     
