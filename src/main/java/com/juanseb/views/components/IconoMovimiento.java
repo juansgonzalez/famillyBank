@@ -1,4 +1,4 @@
-package com.juanseb.bank.components;
+package com.juanseb.views.components;
 
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.TipoMovimiento;

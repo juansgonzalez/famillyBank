@@ -1,25 +1,35 @@
 package com.juanseb.bank.views.main;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Usuario;
+import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
-import com.juanseb.bank.views.cuenta.UsuariosView;
 import com.juanseb.bank.views.inicio.InicioView;
 import com.juanseb.bank.views.movimiento.MovimientosView;
 import com.juanseb.bank.views.tarjeta.TarjetasView;
+import com.juanseb.bank.views.usuario.UsuariosView;
+import com.juanseb.views.components.CuentaSelectComponent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.dialog.GeneratedVaadinDialog;
+import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -38,18 +48,65 @@ import com.vaadin.flow.router.PageTitle;
 @Theme(themeFolder = "bankapp")
 public class MainView extends AppLayout {
 
-    private final Tabs menu;
+    private Tabs menu;
     private H1 viewTitle;
+    
+    private List<Cuenta> listaCuentasUsuario;
+    private Usuario usuario;
 
     private UsuarioService usuarioService;
+    private CuentaService cuentaService;
+    private Long idUsuarioPrincipal;
+	private CuentaSelectComponent cuentaSelect;
 
-    public MainView(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
 
-        setPrimarySection(Section.DRAWER);
-        addToNavbar(true, createHeaderContent());
-        menu = createMenu();
-        addToDrawer(createDrawerContent(menu));
+    public MainView(UsuarioService usuarioService, CuentaService cuentaService) {
+        this.menu = new Tabs();
+		this.usuarioService = usuarioService;
+        this.cuentaService = cuentaService;
+        
+        Optional<Usuario> user = Utils.getCurrentUser(this.usuarioService);
+        
+        if(user.isPresent()) {
+        	this.usuario = user.get();
+        	listaCuentasUsuario = this.cuentaService.obtenerTodasCuentasByUsuarioId(user.get().getId());
+        	if(UI.getCurrent().getSession().getAttribute("idCuenta") == null) {
+        		if(listaCuentasUsuario.size() > 1) {
+					UI.getCurrent().getSession().setAttribute("idCuenta", listaCuentasUsuario.get(0).getId());     
+        			cuentaSelect = new CuentaSelectComponent(listaCuentasUsuario,user.get().getNombreCompleto());
+        			cuentaSelect.open();
+        			
+        			cuentaSelect.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
+        				
+        				@Override
+        				public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
+        					if(!event.isOpened()) { // Check if the form was closed
+        						UI.getCurrent().getSession().setAttribute("idCuenta", cuentaSelect.getCuenta().getId());     
+        						UI.getCurrent().getSession().setAttribute("idUsuarioPrincipal", cuentaSelect.getCuenta().getUsuarioPrincipal().getId());     
+        						UI.getCurrent().getPage().reload();
+        					}
+        					
+        				}
+        			});
+        			
+        		}else if(listaCuentasUsuario.size() == 1) {
+        			Cuenta cuenta = listaCuentasUsuario.get(0);
+        			UI.getCurrent().getSession().setAttribute("idCuenta", cuenta.getId());
+        			UI.getCurrent().getSession().setAttribute("idUsuarioPrincipal", cuenta.getUsuarioPrincipal().getId()); 
+        			UI.getCurrent().getPage().reload();
+        		}else {
+        			Notification.show("Error al obtener Cuentas del usuario.");
+        		}        		
+        	}else {
+        		this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
+
+                setPrimarySection(Section.DRAWER);
+                addToNavbar(true, createHeaderContent());
+                this.menu = createMenu();
+                addToDrawer(createDrawerContent(menu));
+        	}
+        }
+	
     }
 
     private Component createHeaderContent() {
@@ -119,10 +176,13 @@ public class MainView extends AppLayout {
 
     @Override
     protected void afterNavigation() {
-        super.afterNavigation();
-        getTabForComponent(getContent()).ifPresent(menu::setSelectedTab);
-        viewTitle.setText(getCurrentPageTitle());
+    	if(idUsuarioPrincipal != null) {
+    		super.afterNavigation();
+    		getTabForComponent(getContent()).ifPresent(menu::setSelectedTab);
+    		viewTitle.setText(getCurrentPageTitle());    		
+    	}
     }
+    
 
     private Optional<Tab> getTabForComponent(Component component) {
         return menu.getChildren().filter(tab -> ComponentUtil.getData(tab, Class.class).equals(component.getClass()))
@@ -144,6 +204,24 @@ public class MainView extends AppLayout {
         contextMenu.setOpenOnClick(true);
         contextMenu.setTarget(hl);
 
+        contextMenu.addItem("Cambiar Cuenta", e -> {
+        	cuentaSelect = new CuentaSelectComponent(listaCuentasUsuario,usuario.getNombreCompleto());
+			cuentaSelect.open();
+			
+			cuentaSelect.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
+				
+				@Override
+				public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
+					if(!event.isOpened()) { // Check if the form was closed
+						UI.getCurrent().getSession().setAttribute("idCuenta", cuentaSelect.getCuenta().getId());     
+						UI.getCurrent().getSession().setAttribute("idUsuarioPrincipal", cuentaSelect.getCuenta().getUsuarioPrincipal().getId());     
+						UI.getCurrent().getPage().reload();
+					}
+					
+				}
+			});
+        });
+        
         contextMenu.addItem("Logout", e -> {
             contextMenu.getUI().ifPresent(ui -> ui.getPage().setLocation("/logout"));
         });
@@ -170,15 +248,6 @@ public class MainView extends AppLayout {
         }
     }
     
-    private String getRolFromCurrentUser(){
-        Optional<Usuario> usuarioActual = getCurrentUser();
-        if(usuarioActual.isPresent()){
-            return usuarioActual.get().getRol();
-        }else{
-            return "";
-        }
-    }
-    
     private String getImageCurrentUser(){
         Optional<Usuario> usuarioActual = getCurrentUser();
         if(usuarioActual.isPresent()){
@@ -186,5 +255,17 @@ public class MainView extends AppLayout {
         }else{
             return "";
         }
+    }
+    
+    private Cuenta getCurrentCuenta() {
+    	Long idCuenta = (long) UI.getCurrent().getSession().getAttribute("idCuenta");
+    	Cuenta cuenta = null;
+    	if(idCuenta == null) {
+    		System.out.println("ERROR OBTENER CUENTA INICIAL");
+    	}else {
+    		cuenta = cuentaService.obtenerCuentaById(idCuenta);    		
+    	}
+    	
+    	return cuenta;
     }
 }

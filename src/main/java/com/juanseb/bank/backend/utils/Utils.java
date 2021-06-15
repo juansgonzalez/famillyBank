@@ -9,10 +9,15 @@ import java.util.Optional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
+import com.juanseb.bank.backend.model.UsuarioCuenta;
+import com.juanseb.bank.backend.model.UsuarioCuentaId;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
+import com.vaadin.flow.component.UI;
 
 public class Utils {
 	
@@ -101,11 +106,34 @@ public class Utils {
 	}
 	
 	public static Boolean isPrincipal(Usuario usuario) {
-        if("PRINCIPAL".equals(usuario.getRol())) {
+		Long idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
+        if(usuario.getId().equals(idUsuarioPrincipal)) {
         	return true;
         }else {
         	return false;
         }
+	}
+	
+	public static Double obtenerSaldoEnCuenta(Long idCuenta, Long idUsuario, UsuarioCuentaService usuarioCuentaService) {
+		
+		Usuario u = new Usuario();
+		u.setId(idUsuario);
+		
+		Cuenta c = new Cuenta();
+		c.setId(idCuenta);
+		
+		UsuarioCuentaId uc = new UsuarioCuentaId();
+		uc.setCuenta(c);
+		uc.setUsuario(u);
+		UsuarioCuenta ucObtenido = null;
+		if(usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).isPresent()) {
+			ucObtenido = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();			
+			return ucObtenido.getSaldoEnCuenta();
+		}else {
+			return -1d;
+		}
+		
+		
 	}
 
 }

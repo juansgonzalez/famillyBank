@@ -3,13 +3,11 @@ package com.juanseb.bank.views.form;
 import java.time.LocalDate;
 
 import com.juanseb.bank.backend.model.Categoria;
-import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Tarjeta;
 import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.CategoriaService;
-import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.TarjetaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
@@ -29,8 +27,9 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 
 public class MovimientoForm extends Dialog{
-	
-	private MovimientoService movimientoService;
+
+	private static final long serialVersionUID = -1752806202024951575L;
+
 	private CategoriaService categoriaService;
 	private UsuarioService usuarioService;
 	private TarjetaService tarjetaService;
@@ -43,7 +42,7 @@ public class MovimientoForm extends Dialog{
 	private Usuario usuarioActual;
 	
 	private Long idCuenta;
-	private Cuenta cuenta;
+	
 	
 	Binder<Movimiento> binder = new BeanValidationBinder<Movimiento>(Movimiento.class);
 
@@ -55,7 +54,7 @@ public class MovimientoForm extends Dialog{
     private NumberField cantidadMovimiento;
     private ComboBox<Tarjeta> tarjetaMovimiento;
     
-    public MovimientoForm(Long idCuenta, MovimientoService movimientoService, CategoriaService categoriaService, UsuarioService usuarioService, TarjetaService tarjetaService) {
+    public MovimientoForm(Long idCuenta, CategoriaService categoriaService, UsuarioService usuarioService, TarjetaService tarjetaService) {
     	super();
     	action = FORM_ACTION.CANCEL;
 		setCloseOnEsc(true);
@@ -63,7 +62,6 @@ public class MovimientoForm extends Dialog{
 		
 		this.usuarioActual = usuarioService.obtenerUsuarioActualConectado().get();
 		this.idCuenta = idCuenta;
-    	this.movimientoService = movimientoService;
     	this.categoriaService = categoriaService;
     	this.usuarioService = usuarioService;
     	this.tarjetaService = tarjetaService;
@@ -185,7 +183,7 @@ public class MovimientoForm extends Dialog{
         usuarioMovimiento.setId("usuario");
         usuarioMovimiento.setLabel("Usuario");
         usuarioMovimiento.setItemLabelGenerator(Usuario::getNombreCorto);
-        usuarioMovimiento.setItems(this.usuarioService.obtenerTodosUsuarios());
+        usuarioMovimiento.setItems(this.usuarioService.obtenerTodosUsuariosEnCuenta(this.idCuenta));
         usuarioMovimiento.setRequiredIndicatorVisible(Utils.isPrincipal(this.usuarioActual));
         usuarioMovimiento.setValue(this.usuarioActual);
         usuarioMovimiento.setVisible(Utils.isPrincipal(this.usuarioActual));

@@ -4,16 +4,20 @@ import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
+import com.juanseb.bank.backend.model.UsuarioCuenta;
+import com.juanseb.bank.backend.model.UsuarioCuentaId;
 import com.juanseb.bank.backend.service.CategoriaService;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.TarjetaService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
-import com.juanseb.bank.components.IconoMovimientoTarjeta;
 import com.juanseb.bank.views.enums.FORM_ACTION;
 import com.juanseb.bank.views.form.MovimientoForm;
 import com.juanseb.bank.views.main.MainView;
+import com.juanseb.views.components.ColorNotification;
+import com.juanseb.views.components.IconoMovimientoTarjeta;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
@@ -23,7 +27,6 @@ import com.vaadin.flow.component.dialog.GeneratedVaadinDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
@@ -40,11 +43,14 @@ import java.util.List;
 @PageTitle("Movimientos")
 public class MovimientosView extends VerticalLayout {
 
-    private MovimientoService movimientoService;
+	private static final long serialVersionUID = -5643146991184397098L;
+	
+	private MovimientoService movimientoService;
     private UsuarioService usuarioService;
     private CategoriaService categoriaService;
     private TarjetaService tarjetaService;
     private CuentaService cuentaService;
+    private UsuarioCuentaService usuarioCuentaService;
     
     private Long idCuentaActual;
     
@@ -57,7 +63,7 @@ public class MovimientosView extends VerticalLayout {
     private Grid<Movimiento> grid = new Grid<>(Movimiento.class);
     //private Optional<Usuario> currentUser;
 
-    public MovimientosView(MovimientoService movimientoService, UsuarioService usuarioService,CategoriaService categoriaService,TarjetaService tarjetaService, CuentaService cuentaService){
+    public MovimientosView(MovimientoService movimientoService, UsuarioService usuarioService,CategoriaService categoriaService,TarjetaService tarjetaService, CuentaService cuentaService, UsuarioCuentaService usuarioCuentaService){
         addClassName("movimientos-view");
         setPadding(true);
 
@@ -66,6 +72,7 @@ public class MovimientosView extends VerticalLayout {
         this.categoriaService = categoriaService;
         this.tarjetaService = tarjetaService;
         this.cuentaService = cuentaService;
+        this.usuarioCuentaService = usuarioCuentaService;
         
         usuarioActual = this.usuarioService.obtenerUsuarioActualConectado().get();
         
@@ -94,39 +101,47 @@ public class MovimientosView extends VerticalLayout {
 
 
     private void openMovimientoForm() {
-		movimientoForm = new MovimientoForm(idCuentaActual, this.movimientoService, this.categoriaService, this.usuarioService, this.tarjetaService);
+		movimientoForm = new MovimientoForm(idCuentaActual, this.categoriaService, this.usuarioService, this.tarjetaService);
 		
 		movimientoForm.open();
 		
 		movimientoForm.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
 
+			private static final long serialVersionUID = 8812340255137528127L;
+
 			@Override
 			public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
 				if(!event.isOpened()) { // Check if the form was closed
 					if(FORM_ACTION.SAVE.equals(movimientoForm.getAction())) { // Check if the form was closed with the save button
-						Usuario usuarioMovimientoAntes = null;
-						Cuenta cuentaObtenidaAntes = null;
+
 						try {
-							// Get The Product with the new values
 							movimientoEditable = movimientoForm.getMovimiento();
 							
-							Usuario usuarioMovimiento = movimientoEditable.getUsuario();
-							usuarioMovimientoAntes = usuarioMovimiento;
-							Double saldoActualUsuario = usuarioMovimiento.getSaldo();
-							
+							Usuario u = new Usuario();
+							u.setId(usuarioActual.getId());
+
+							Cuenta c = new Cuenta();
+							c.setId(idCuentaActual);
+
+							UsuarioCuentaId uc = new UsuarioCuentaId();
+							uc.setCuenta(c);
+							uc.setUsuario(u);
+
+							UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
+
+							Double saldoActualUsuario = usuarioCuenta.getSaldoEnCuenta();
+
 							if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
 								saldoActualUsuario -= movimientoEditable.getCantidad();
 							}else {
 								saldoActualUsuario += movimientoEditable.getCantidad();
-								
 							}
-							usuarioMovimiento.setSaldo(saldoActualUsuario);
-							
-							Usuario usuarioGuardado = usuarioService.saveUpdateUsuario(usuarioMovimiento);
-							movimientoEditable.setUsuario(usuarioGuardado);
+							usuarioCuenta.setSaldoEnCuenta(saldoActualUsuario);
+
+							usuarioCuenta = usuarioCuentaService.save(usuarioCuenta);
 							
 							Cuenta cuentaObtenida = cuentaService.obtenerCuentaById(idCuentaActual);
-							cuentaObtenidaAntes = cuentaObtenida;
+
 							Double saldoCuentaNuevo = cuentaObtenida.getSaldo();
 							if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
 								saldoCuentaNuevo -= movimientoEditable.getCantidad();			
@@ -145,15 +160,9 @@ public class MovimientosView extends VerticalLayout {
 							// Refresh the grid to display all the Products
 							refreshGrid();
 							
-							new Notification().show("Se ha creado el movimiento con exito");
+							new ColorNotification("Se ha creado el movimiento con exito","green").open();
 						}catch(Exception e) {
-							new Notification().show("Ha ocurrido un error al crear movimiento intentelo mas tarde. Si el problema persiste notifique al administrador");
-							if(usuarioMovimientoAntes != null) {
-								usuarioService.saveUpdateUsuario(usuarioMovimientoAntes);
-							}
-							if(cuentaObtenidaAntes != null) {
-								cuentaService.save(cuentaObtenidaAntes);
-							}
+							new ColorNotification("Ha ocurrido un error al crear movimiento intentelo mas tarde. Si el problema persiste notifique al administrador","red").open();
 						}
 					}
 				}

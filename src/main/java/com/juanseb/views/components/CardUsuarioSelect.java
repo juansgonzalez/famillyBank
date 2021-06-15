@@ -1,27 +1,33 @@
-package com.juanseb.bank.components;
+package com.juanseb.views.components;
 
 import java.text.DecimalFormat;
 
 import com.github.appreciated.card.ClickableCard;
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Usuario;
-import com.juanseb.bank.backend.service.CuentaService;
+import com.juanseb.bank.backend.model.UsuarioCuenta;
+import com.juanseb.bank.backend.model.UsuarioCuentaId;
 import com.juanseb.bank.backend.service.MovimientoService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
-import com.juanseb.bank.views.form.CuentaDialog;
+import com.juanseb.bank.backend.utils.Utils;
 import com.juanseb.bank.views.form.UsuarioDialog;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class CardUsuario extends ClickableCard{
+public class CardUsuarioSelect extends ClickableCard{
 	
-	public CardUsuario(Cuenta cuenta,Usuario usuario, UsuarioService usuarioService, MovimientoService movimientoService) {
-        super(event -> {
-            UI.getCurrent().getSession().setAttribute("idCuenta", cuenta.getId());
-            new UsuarioDialog(usuarioService, movimientoService,cuenta.getId(), usuario.getId()).open();
+	private static final long serialVersionUID = 4194699125726794904L;
+	
+
+	public CardUsuarioSelect(Cuenta cuenta,Usuario usuario, UsuarioService usuarioService, MovimientoService movimientoService, UsuarioCuentaService usuarioCuentaService) {
+		super(event -> {
+        	addUsuarioCuenta(usuarioService,usuarioCuentaService,usuario,cuenta);
+        	UI.getCurrent().getPage().reload();
         });
 
         // estilo del card
@@ -50,16 +56,16 @@ public class CardUsuario extends ClickableCard{
         // layout con el saldo de la cuenta
         HorizontalLayout saldoLayout = new HorizontalLayout();
         Span saldoSpan = new Span();
-        Double saldo = 0.0;
-        if(usuario.getSaldo()==null) {
-        	saldo = cuenta.getSaldo();
-        }else {
-        	saldo = usuario.getSaldo();
-        }
+        Double saldo = Utils.obtenerSaldoEnCuenta(cuenta.getId(), usuario.getId(), usuarioCuentaService);
+        
+        
         DecimalFormat df = new DecimalFormat("#,###.##");
         saldoSpan.add(df.format(saldo) +" €");
         saldoSpan.getElement().getStyle().set("color", "#D01E69");
         saldoSpan.getElement().getStyle().set("font-weight", "bold");
+        if(saldo.equals(-1d)) {
+        	saldoSpan.setVisible(false);
+        }
         saldoLayout.add(saldoSpan);
 
 
@@ -71,5 +77,17 @@ public class CardUsuario extends ClickableCard{
 
         add(layout);
     }
+
+	private static void addUsuarioCuenta(UsuarioService usuarioService, UsuarioCuentaService usuarioCuentaService, Usuario usuario, Cuenta cuenta) {
+		UsuarioCuenta uc = new UsuarioCuenta();
+		UsuarioCuentaId ucId = new UsuarioCuentaId(cuenta, usuario);
+		
+		uc.setId(ucId);
+		if(!usuarioCuentaService.exist(ucId)) {
+			uc.setSaldoEnCuenta(0d);
+			usuarioCuentaService.save(uc);			
+		}
+	}
+
 
 }

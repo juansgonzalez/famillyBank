@@ -1,9 +1,10 @@
-package com.juanseb.bank.components;
+package com.juanseb.views.components;
 
 import com.github.appreciated.card.ClickableCard;
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.MovimientoService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.views.form.CuentaDialog;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Image;
@@ -13,7 +14,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class CardCuenta extends ClickableCard {
 
-    public CardCuenta(Cuenta cuenta, CuentaService cuentaService, MovimientoService movimientoService) {
+    public CardCuenta(Cuenta cuenta, CuentaService cuentaService, MovimientoService movimientoService, UsuarioCuentaService usuarioCuentaService) {
         super(event -> {
             UI.getCurrent().getSession().setAttribute("idCuenta", cuenta.getId());
             new CuentaDialog(cuentaService, movimientoService, cuenta.getId()).open();

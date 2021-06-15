@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
-import org.springframework.lang.Nullable;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "usuario", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username") })
 public class Usuario {
 
 //	CREATE TABLE `usuario` (
@@ -38,14 +40,15 @@ public class Usuario {
     
     private String image;
     
-    private Double saldo;
-    
-    private String rol;
 
     @JsonIgnore
     private String password;
 
     // relaciones
+    
+    @OneToMany(mappedBy = "usuarioPrincipal")
+    @JsonIgnore
+    List<Cuenta> cuentasPrincipales = new ArrayList<>();
 
 //    CREATE TABLE `usuario_cuenta` (
 //    		  `usuario_id` bigint NOT NULL,
@@ -54,13 +57,17 @@ public class Usuario {
 //    		  FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`)
 //    		);
     
-    @ManyToMany
-    @JoinTable(
-            name = "usuario_cuenta",
-            joinColumns = {@JoinColumn(name="usuario_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name="cuenta_id", referencedColumnName = "id")}
-    )
-    List<Cuenta> cuentas = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "usuario_cuenta",
+//            joinColumns = {@JoinColumn(name="usuario_id", referencedColumnName = "id")},
+//            inverseJoinColumns = {@JoinColumn(name="cuenta_id", referencedColumnName = "id")}
+//    )
+//    List<Cuenta> cuentas = new ArrayList<>();
+    @OneToMany(mappedBy = "id.usuario")
+    private Set<UsuarioCuenta> cuentas = new HashSet<UsuarioCuenta>(0);
+
+    
     
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
@@ -70,13 +77,11 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String username,String image, String nombreCompleto, String nombreCorto, String rol, Double saldo, String password) {
+    public Usuario(String username,String image, String nombreCompleto, String nombreCorto, String password) {
         this.username = username;
         this.image = image;
-        this.rol = rol;
         this.nombreCompleto = nombreCompleto;
         this.nombreCorto = nombreCorto;
-        this.saldo = saldo;
         this.password = password;
     }
 
@@ -115,15 +120,6 @@ public class Usuario {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-
-    public String getRol() {
-		return rol;
-	}
-
-	public void setRol(String rol) {
-		this.rol = rol;
-	}
 
 	public String getImage() {
 		return image;
@@ -133,21 +129,26 @@ public class Usuario {
 		this.image = image;
 	}
 
-	public Double getSaldo() {
-		return saldo;
+
+	public List<Cuenta> getCuentasPrincipales() {
+		return cuentasPrincipales;
 	}
 
-	public void setSaldo(Double saldo) {
-		this.saldo = saldo;
+	public void setCuentasPrincipales(List<Cuenta> cuentasPrincipales) {
+		this.cuentasPrincipales = cuentasPrincipales;
 	}
 
-	public List<Cuenta> getCuentas() {
-        return cuentas;
-    }
+	public Set<UsuarioCuenta> getCuentas() {
+		return cuentas;
+	}
 
-    public void setCuentas(List<Cuenta> cuentas) {
-        this.cuentas = cuentas;
-    }
+	public void setCuentas(Set<UsuarioCuenta> cuentas) {
+		this.cuentas = cuentas;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public List<Movimiento> getMovimientos() {
 		return movimientos;

@@ -12,8 +12,9 @@ import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.TarjetaService;
 import com.juanseb.bank.backend.utils.Utils;
-import com.juanseb.bank.components.IconoMovimientoTarjeta;
+import com.juanseb.views.components.IconoMovimientoTarjeta;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -24,7 +25,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 
 public class TarjetaDialog extends Dialog{
-	
+
+	private static final long serialVersionUID = -4191342611264243074L;
+
 	@Autowired
 	private TarjetaService tarjetaService;
 
@@ -46,23 +49,21 @@ public class TarjetaDialog extends Dialog{
 	private TextField tarjetaCuentaIban;
 	
 	
-
-
-	
 	public TarjetaDialog(MovimientoService movimientoService, TarjetaService tarjetaService,Usuario usuarioActual,Long idTarjeta) {
 		super();
 		this.movimientoService = movimientoService;
 		this.tarjetaService = tarjetaService;
 		this.usuarioActual = usuarioActual;
+		
 		if(Utils.isPrincipal(usuarioActual)) {
-			this.movimientosList = movimientoService.obtenerMovimientosDeTarjeta(idTarjeta);			
+			this.movimientosList =this.movimientoService.obtenerMovimientosDeTarjeta(idTarjeta);			
 		}else {
-			this.movimientosList = movimientoService.obtenerMovimientosDeTarjetaByUsuario(idTarjeta,this.usuarioActual.getId());
+			this.movimientosList = this.movimientoService.obtenerMovimientosDeTarjetaByUsuario(idTarjeta,this.usuarioActual.getId());
 		}
 		setCloseOnEsc(true);
 		setWidth("50%");
 
-		tarjeta = tarjetaService.obtenerTarjetaById(idTarjeta);
+		tarjeta = this.tarjetaService.obtenerTarjetaById(idTarjeta);
 		
 		createFormTarjeta();
 		createGrid();
