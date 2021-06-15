@@ -186,7 +186,7 @@ public class MovimientosView extends VerticalLayout {
     private void loadMovimientosGrid() {
         ListDataProvider<Movimiento> movimientosProvider;
         movimientosProvider = DataProvider.ofCollection(this.movimientosList);
-        movimientosProvider.setSortOrder(Movimiento::getFecha, SortDirection.DESCENDING);
+        movimientosProvider.setSortOrder(Movimiento::getId, SortDirection.DESCENDING);
         grid.setDataProvider(movimientosProvider);
     }
 
