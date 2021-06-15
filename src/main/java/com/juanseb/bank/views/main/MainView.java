@@ -8,6 +8,7 @@ import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
+import com.juanseb.bank.views.cuentaAhorro.CuentaAhorro;
 import com.juanseb.bank.views.form.ResetPassword;
 import com.juanseb.bank.views.inicio.InicioView;
 import com.juanseb.bank.views.movimiento.MovimientosView;
@@ -26,8 +27,8 @@ import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.GeneratedVaadinDialog;
 import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -37,10 +38,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.router.PageTitle;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -171,6 +172,7 @@ public class MainView extends AppLayout {
     private Component[] createMenuItems() {
         return new Tab[]{createTab("Inicio", InicioView.class,true),
                 createTab("Usuarios", UsuariosView.class,Utils.isPrincipal(getCurrentUser().get())),
+                createTab("Cuenta Ahorro", CuentaAhorro.class,Utils.isPrincipal(getCurrentUser().get())),
                 createTab("Tarjetas", TarjetasView.class,true),
                 createTab("Movimientos", MovimientosView.class,true)
         };
