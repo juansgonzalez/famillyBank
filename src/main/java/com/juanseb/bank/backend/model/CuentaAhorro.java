@@ -20,6 +20,8 @@ public class CuentaAhorro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+    
+    private String nombre;
 	
     @Column(nullable = false)
 	private double saldo = 0;
@@ -36,9 +38,10 @@ public class CuentaAhorro {
 		super();
 	}
 
-	public CuentaAhorro(Long id, double saldo, Cuenta cuenta, List<Movimiento> movimientos) {
+	public CuentaAhorro(Long id, String nombre, double saldo, Cuenta cuenta, List<Movimiento> movimientos) {
 		super();
 		this.id = id;
+		this.nombre = nombre;
 		this.saldo = saldo;
 		this.cuenta = cuenta;
 		this.movimientos = movimientos;
@@ -74,6 +77,14 @@ public class CuentaAhorro {
 
 	public void setMovimientos(List<Movimiento> movimientos) {
 		this.movimientos = movimientos;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 }
