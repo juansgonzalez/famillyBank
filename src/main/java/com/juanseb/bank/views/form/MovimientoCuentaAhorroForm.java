@@ -97,6 +97,8 @@ public class MovimientoCuentaAhorroForm extends Dialog{
         categoriaMovimiento.setItemLabelGenerator(Categoria::getNombre);
         categoriaMovimiento.setItems(this.categoriaService.obtenerTodasCategorias());
         categoriaMovimiento.setRequiredIndicatorVisible(true);
+        categoriaMovimiento.setVisible(false);
+        categoriaMovimiento.setValue(categoriaService.obtenerCategoriaById(6l).get());
         setColspan(categoriaMovimiento, 1);
         binder.forField(categoriaMovimiento).asRequired("La categoria es obligatoria")
         	.bind(Movimiento::getCategoria,Movimiento::setCategoria);
@@ -111,7 +113,7 @@ public class MovimientoCuentaAhorroForm extends Dialog{
         
         movimientoData = new FormLayout(tipoMovimineto,conceptoMovimiento,cantidadMovimiento,categoriaMovimiento,
         		fechaMovimiento);
-        movimientoData.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 4));
+        movimientoData.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 3));
 
 	}
 	
