@@ -389,7 +389,7 @@ public class InicioView extends HorizontalLayout {
 		for (int i = 0; i < listaCategorias.size(); i++) {
 			Categoria categoriaActual = listaCategorias.get(i);
 			String mesActual = String.valueOf(LocalDate.now().getMonthValue());
-			serieData[i] = Utils.obtenerGastos(this.movimientoService.obtenerMovimientosCuentaByCategoria(idCuenta,new MovimientoMesFilter(mesActual, categoriaActual.getId())));
+			serieData[i] = Utils.obtenerGastos(this.movimientoService.obtenerMovimientosCuentaByCategoriaAndUsuario(idCuenta,usuarioActual.getId(),new MovimientoMesFilter(mesActual, categoriaActual.getId())));
 		}
 		serie.setData(serieData);
 		return serieData;
