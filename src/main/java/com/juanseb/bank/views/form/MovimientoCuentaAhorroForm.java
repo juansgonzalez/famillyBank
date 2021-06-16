@@ -12,7 +12,6 @@ import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
 import com.juanseb.bank.views.enums.FORM_ACTION;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -25,13 +24,12 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.provider.ListDataProvider;
 
 public class MovimientoCuentaAhorroForm extends Dialog{
 
 	private static final long serialVersionUID = 4578892836029812434L;
 	
-	private FORM_ACTION action;
+	private FORM_ACTION action = FORM_ACTION.CANCEL;
 	
 	private UsuarioService usuarioService;
 	private CategoriaService categoriaService;
@@ -41,8 +39,6 @@ public class MovimientoCuentaAhorroForm extends Dialog{
 	private CuentaAhorro cuentaAhorro;
 	
 	private FormLayout movimientoData = new FormLayout();
-	
-	private Long idCuenta;
 	
 	Binder<Movimiento> binder = new BeanValidationBinder<Movimiento>(Movimiento.class);
 
@@ -67,7 +63,6 @@ public class MovimientoCuentaAhorroForm extends Dialog{
 		setCloseOnOutsideClick(false);
 		
 		
-		this.idCuenta = (Long) UI.getCurrent().getSession().getAttribute("idCuenta");
 		this.cuentaAhorro = cuentaAhorro;
 		this.usuario = Utils.getCurrentUser(usuarioService).get();
 		

@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import com.github.appreciated.card.ClickableCard;
 import com.juanseb.bank.backend.model.CuentaAhorro;
 import com.juanseb.bank.backend.service.CategoriaService;
+import com.juanseb.bank.backend.service.CuentaAhorroService;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.views.form.CuentaAhorroDialog;
@@ -15,14 +16,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 public class CuentaAhorroDisplayBox extends ClickableCard {
 	
 	private static final long serialVersionUID = 270718588005160260L;
-	
-	private MovimientoService movimientoService;
 
 	private CuentaAhorro cuentaAhorro;
 
-	public CuentaAhorroDisplayBox(CuentaAhorro cuentaAhorro, UsuarioService usuarioService, MovimientoService movimientoService, CategoriaService categoriaService) {
-		super(componentEvent -> new CuentaAhorroDialog(movimientoService, usuarioService, categoriaService, cuentaAhorro).open());
-		this.movimientoService = movimientoService;
+	public CuentaAhorroDisplayBox(CuentaAhorroService cuentaAhorroService, CuentaAhorro cuentaAhorro, UsuarioService usuarioService, MovimientoService movimientoService, CategoriaService categoriaService) {
+		super(componentEvent -> new CuentaAhorroDialog(cuentaAhorroService,movimientoService, usuarioService, categoriaService, cuentaAhorro).open());
 		this.cuentaAhorro = cuentaAhorro;
 		
 		this.setWidth("255px");

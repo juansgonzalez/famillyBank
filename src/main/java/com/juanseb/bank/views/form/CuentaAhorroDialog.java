@@ -6,20 +6,26 @@ import java.util.List;
 
 import com.juanseb.bank.backend.model.CuentaAhorro;
 import com.juanseb.bank.backend.model.Movimiento;
+import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.service.CategoriaService;
+import com.juanseb.bank.backend.service.CuentaAhorroService;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.views.enums.FORM_ACTION;
+import com.juanseb.views.components.ColorNotification;
 import com.juanseb.views.components.IconoMovimientoTarjeta;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.GeneratedVaadinDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Hr;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -32,6 +38,7 @@ public class CuentaAhorroDialog extends Dialog{
 	private MovimientoService movimientoService;
 	private UsuarioService usuarioService;
 	private CategoriaService categoriaservice;
+	private CuentaAhorroService cuentaAhorroService;
 	
 	private Grid<Movimiento> grid;
 
@@ -47,16 +54,35 @@ public class CuentaAhorroDialog extends Dialog{
 	private NumberField saldoCuentaAhorro;
 	private Button botonCrearNuevo;
 
-	public CuentaAhorroDialog(MovimientoService movimientoService, UsuarioService usuarioService,CategoriaService categoriaservice, CuentaAhorro cuentaAhorro) {
+	public CuentaAhorroDialog(CuentaAhorroService cuentaAhorroService, MovimientoService movimientoService, UsuarioService usuarioService,CategoriaService categoriaservice, CuentaAhorro cuentaAhorro) {
 		this.movimientoService = movimientoService;
 		this.cuentaAhorro = cuentaAhorro;
 		this.usuarioService = usuarioService;
 		this.categoriaservice = categoriaservice;
+		this.cuentaAhorroService = cuentaAhorroService;
 		
 		init();
 		createGrid();
 		
-		add(new H3("Cuenta Ahorro"),cuentaAhorroData, new Hr(),new H3("Movimientos"),grid);
+		addDialogCloseActionListener(new ComponentEventListener<Dialog.DialogCloseActionEvent>() {
+
+			private static final long serialVersionUID = -2593634739794137177L;
+
+			@Override
+			public void onComponentEvent(DialogCloseActionEvent event) {
+				UI.getCurrent().getPage().reload();
+				
+			}
+		});
+		HorizontalLayout titulo = new HorizontalLayout();
+		titulo.add(new H3("Cuenta Ahorro"));
+		
+		H3 anio = new H3("Año: "+LocalDate.now().getYear());
+		anio.getElement().getStyle().set("margin-left", "auto");
+		anio.getElement().getStyle().set("margin-top", "auto");
+		titulo.add(anio);
+		
+		add(titulo,cuentaAhorroData, new Hr(),new H3("Movimientos"),grid);
 	}
 
 	private void init() {
@@ -64,20 +90,6 @@ public class CuentaAhorroDialog extends Dialog{
 		LocalDate fin = LocalDate.of(LocalDate.now().getYear(), 12, 31);
 		
 		movimientosList = movimientoService.obtenerMovimientosDeCuentaByCuentaAhorro(cuentaAhorro.getId(), init, fin);
-		
-		movimientoForm = new MovimientoCuentaAhorroForm(this.cuentaAhorro, this.usuarioService, this.categoriaservice);
-		movimientoForm.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
-
-			private static final long serialVersionUID = 28693697138061208L;
-
-			@Override
-			public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
-				if(movimientoForm.getAction().equals(FORM_ACTION.SAVE)) {
-					movimientoService.save(movimientoForm.getMovimiento());
-					refreshGrid();
-				}
-			}
-		});
 		
 		nombreCuentaAhorro = new TextField("Nombre Cuenta Ahorro");
 		nombreCuentaAhorro.setId("nombreCuentaAhorro");
@@ -90,7 +102,7 @@ public class CuentaAhorroDialog extends Dialog{
 		saldoCuentaAhorro.setEnabled(false);
 		
 		botonCrearNuevo = new Button("Crear movimiento",clickAction -> {
-			movimientoForm.open();
+			openMovimientoForm();
 		});
         botonCrearNuevo.getElement().getStyle().set("background-color", "#D01E69");
         botonCrearNuevo.getElement().getStyle().set("color", "white");
@@ -102,6 +114,41 @@ public class CuentaAhorroDialog extends Dialog{
         cuentaAhorroData.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 3));
 	}
 	
+	private void openMovimientoForm() {
+		movimientoForm = new MovimientoCuentaAhorroForm(this.cuentaAhorro, this.usuarioService, this.categoriaservice);
+		
+		movimientoForm.open();
+		
+		movimientoForm.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
+
+			private static final long serialVersionUID = 28693697138061208L;
+
+			@Override
+			public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
+				if(!event.isOpened()) {
+					if(movimientoForm.getAction().equals(FORM_ACTION.SAVE)) {
+						Double saldo = cuentaAhorro.getSaldo();
+						
+						if(TipoMovimiento.GASTO.equals(movimientoForm.getMovimiento().getTipo())) {
+							saldo -= movimientoForm.getMovimiento().getCantidad();						
+						}else {
+							saldo += movimientoForm.getMovimiento().getCantidad();						
+						}
+						
+						cuentaAhorro.setSaldo(saldo);	
+						cuentaAhorroService.crearActualizarCuentaAhorro(cuentaAhorro);
+								
+						movimientoService.save(movimientoForm.getMovimiento());
+						saldoCuentaAhorro.setValue(cuentaAhorro.getSaldo());
+						refreshGrid();
+						new ColorNotification("Se ha creado el movimiento con exito","green").open();
+					}
+				}					
+			}
+		});
+		
+	}
+
 	private void createGrid() {
 		this.grid = new Grid<>();
 		this.grid.setWidthFull();
@@ -110,8 +157,8 @@ public class CuentaAhorroDialog extends Dialog{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		
 		this.grid.addComponentColumn(c -> new IconoMovimientoTarjeta(c))
-		.setWidth("100px").setHeader("Tarjeta").setFlexGrow(1);
-		this.grid.addColumn(c -> c.getCantidad()+" €").setHeader("Cantidad").setFlexGrow(1);
+		.setWidth("100px").setHeader("Tipo").setFlexGrow(0);
+		this.grid.addColumn(c -> c.getCantidad()+" €").setHeader("Cantidad").setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
 		this.grid.addColumn(c -> c.getConcepto()).setHeader("Concepto").setFlexGrow(1);
 		this.grid.addColumn(c -> dateFormat.format(c.getFecha())).setHeader("Fecha").setWidth("125px").setFlexGrow(0);
 

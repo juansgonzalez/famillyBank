@@ -53,14 +53,13 @@ public class CuentaAhorroView extends VerticalLayout{
 
         for (CuentaAhorro cuentaAhorro: this.listaCuentasAhorroByCuenta){
             contador++;
-
             if(contador <= numCardsPerRow){
-                hl.add(new CuentaAhorroDisplayBox(cuentaAhorro,this.usuarioService, this.movimientoService, this.categoriaService));
+                hl.add(new CuentaAhorroDisplayBox(this.cuentaAhorroService,cuentaAhorro,this.usuarioService, this.movimientoService, this.categoriaService));
             }else{
                 contador = 1;
                 vl.add(hl);
                 hl = new HorizontalLayout();
-                hl.add(new CuentaAhorroDisplayBox(cuentaAhorro, this.usuarioService, this.movimientoService, this.categoriaService));
+                hl.add(new CuentaAhorroDisplayBox(this.cuentaAhorroService,cuentaAhorro,this.usuarioService, this.movimientoService, this.categoriaService));
             }
         }
 
