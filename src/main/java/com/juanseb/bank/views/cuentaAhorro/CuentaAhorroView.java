@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.juanseb.bank.backend.model.CuentaAhorro;
+import com.juanseb.bank.backend.service.CategoriaService;
 import com.juanseb.bank.backend.service.CuentaAhorroService;
 import com.juanseb.bank.backend.service.MovimientoService;
+import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.views.main.MainView;
 import com.juanseb.views.components.CuentaAhorroDisplayBox;
 import com.vaadin.flow.component.UI;
@@ -25,13 +27,19 @@ public class CuentaAhorroView extends VerticalLayout{
 	
 	private MovimientoService movimientoService;
 	
+	private UsuarioService usuarioService;
+	
+	private CategoriaService categoriaService;
+	
 	private List<CuentaAhorro> listaCuentasAhorroByCuenta = new ArrayList<>(0);
 	
 	private Long idCuenta;
 
-	public CuentaAhorroView(CuentaAhorroService cuentaAhorroService, MovimientoService movimientoService) {
+	public CuentaAhorroView(CuentaAhorroService cuentaAhorroService, MovimientoService movimientoService, UsuarioService usuarioService, CategoriaService categoriaService) {
 		this.cuentaAhorroService = cuentaAhorroService;
 		this.movimientoService = movimientoService;
+		this.usuarioService = usuarioService;
+		this.categoriaService = categoriaService;
 		init();
 		add(new H2("Cuentas Ahorro"), crearCartasCuentaAhorro());
 
@@ -47,12 +55,12 @@ public class CuentaAhorroView extends VerticalLayout{
             contador++;
 
             if(contador <= numCardsPerRow){
-                hl.add(new CuentaAhorroDisplayBox(cuentaAhorro, this.movimientoService));
+                hl.add(new CuentaAhorroDisplayBox(cuentaAhorro,this.usuarioService, this.movimientoService, this.categoriaService));
             }else{
                 contador = 1;
                 vl.add(hl);
                 hl = new HorizontalLayout();
-                hl.add(new CuentaAhorroDisplayBox(cuentaAhorro, this.movimientoService));
+                hl.add(new CuentaAhorroDisplayBox(cuentaAhorro, this.usuarioService, this.movimientoService, this.categoriaService));
             }
         }
 
