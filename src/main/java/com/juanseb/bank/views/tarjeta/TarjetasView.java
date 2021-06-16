@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Tarjeta;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.MovimientoService;
@@ -13,17 +12,12 @@ import com.juanseb.bank.backend.service.TarjetaService;
 import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
-import com.juanseb.bank.views.form.TarjetaDialog;
 import com.juanseb.bank.views.main.MainView;
-import com.juanseb.views.components.CardCuenta;
 import com.juanseb.views.components.TarjetasDisplayBox;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 

@@ -5,10 +5,6 @@ import java.util.List;
 
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.CuentaAhorro;
-import com.juanseb.bank.backend.model.TipoMovimiento;
-import com.juanseb.bank.backend.model.Usuario;
-import com.juanseb.bank.backend.model.UsuarioCuenta;
-import com.juanseb.bank.backend.model.UsuarioCuentaId;
 import com.juanseb.bank.backend.service.CategoriaService;
 import com.juanseb.bank.backend.service.CuentaAhorroService;
 import com.juanseb.bank.backend.service.CuentaService;
