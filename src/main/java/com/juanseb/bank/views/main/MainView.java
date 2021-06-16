@@ -8,7 +8,7 @@ import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
-import com.juanseb.bank.views.cuentaAhorro.CuentaAhorro;
+import com.juanseb.bank.views.cuentaAhorro.CuentaAhorroView;
 import com.juanseb.bank.views.form.ResetPassword;
 import com.juanseb.bank.views.inicio.InicioView;
 import com.juanseb.bank.views.movimiento.MovimientosView;
@@ -172,7 +172,7 @@ public class MainView extends AppLayout {
     private Component[] createMenuItems() {
         return new Tab[]{createTab("Inicio", InicioView.class,true),
                 createTab("Usuarios", UsuariosView.class,Utils.isPrincipal(getCurrentUser().get())),
-                createTab("Cuenta Ahorro", CuentaAhorro.class,Utils.isPrincipal(getCurrentUser().get())),
+                createTab("Cuenta Ahorro", CuentaAhorroView.class,Utils.isPrincipal(getCurrentUser().get())),
                 createTab("Tarjetas", TarjetasView.class,true),
                 createTab("Movimientos", MovimientosView.class,true)
         };

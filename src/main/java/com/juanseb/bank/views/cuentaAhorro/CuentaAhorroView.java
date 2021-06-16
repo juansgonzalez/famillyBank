@@ -7,11 +7,11 @@ import com.vaadin.flow.router.Route;
 
 @Route(value = "cuentaAhorro", layout = MainView.class)
 @PageTitle("Cuentas Ahorro")
-public class CuentaAhorro extends HorizontalLayout{
+public class CuentaAhorroView extends HorizontalLayout{
 
 	private static final long serialVersionUID = -3620817856420812391L;
 
-	public CuentaAhorro() {
+	public CuentaAhorroView() {
 		this.setSizeFull();
 
 	}
