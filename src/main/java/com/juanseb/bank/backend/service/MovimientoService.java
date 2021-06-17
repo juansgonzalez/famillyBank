@@ -24,7 +24,7 @@ public interface MovimientoService {
 
 	public List<Movimiento> obtenerMovimientoFechaTarjeta(Long idTarjeta,LocalDate fechaInit, LocalDate fechaFin);
 
-	public List<Movimiento> obtenerMovimientosCuentaByCategoria(Long idCuenta, MovimientoMesFilter filtroMovimiento);
+//	public List<Movimiento> obtenerMovimientosCuentaByCategoria(Long idCuenta, MovimientoMesFilter filtroMovimiento);
 
 	public List<Movimiento> obtenerMovimientosTarjetaByCategoria(Long idTarjeta, MovimientoMesFilter filtroMovimiento);
 
@@ -38,5 +38,9 @@ public interface MovimientoService {
 
 	public List<Movimiento> obtenerMovimientoFechaCuentaByUsuario(Long idCuenta, Long id, LocalDate of, LocalDate of2);
 
+	public List<Movimiento> obtenerMovimientosDeCuentaByCuentaAhorro(Long idCuentaAhorro, LocalDate of, LocalDate of2);
+
 	public Movimiento save(Movimiento movimientoEditable);
+
+	List<Movimiento> obtenerMovimientosCuentaByCategoriaAndUsuario(Long idCuenta, Long idUsuario, MovimientoMesFilter filtroMovimiento);
 }

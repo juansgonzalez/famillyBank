@@ -145,7 +145,7 @@ public class MovimientoServiceImpl implements MovimientoService {
 	}
 
 	@Override
-	public List<Movimiento> obtenerMovimientosCuentaByCategoria(Long idCuenta, MovimientoMesFilter filtroMovimiento) {
+	public List<Movimiento> obtenerMovimientosCuentaByCategoriaAndUsuario(Long idCuenta, Long idUsuario, MovimientoMesFilter filtroMovimiento) {
 		Date fechaInit = new Date();
 		Date fechaFin = new Date();
 		try {
@@ -156,7 +156,7 @@ public class MovimientoServiceImpl implements MovimientoService {
 		}
 		Long idCategoria = filtroMovimiento.getIdCategoria();
 		
-		return movimientoRepository.obtenerMovimientosDeCuentaByFechaAndCategoria(idCuenta,idCategoria ,fechaInit, fechaFin);
+		return movimientoRepository.obtenerMovimientosDeCuentaByFechaAndCategoriaAndUsuario(idCuenta,idUsuario,idCategoria ,fechaInit, fechaFin);
 	}
 	
 	@Override
@@ -286,6 +286,20 @@ public class MovimientoServiceImpl implements MovimientoService {
 		
 	}
 
+	@Override
+	public List<Movimiento> obtenerMovimientosDeCuentaByCuentaAhorro(Long idCuentaAhorro, LocalDate fechaInit, LocalDate fechaFin) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateInit = null;
+		Date datefin = null;
+		try {
+			dateInit = formatter.parse(fechaInit.toString());
+			datefin = formatter.parse(fechaFin.toString());
+		} catch (ParseException e) { 		
+
+		}	
+		return movimientoRepository.obtenerMovimientosDeCuentaByCuentaAhorro(idCuentaAhorro, dateInit, datefin);
+
+	}
 
 
 }

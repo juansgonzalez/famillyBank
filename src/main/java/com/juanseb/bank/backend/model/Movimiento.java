@@ -62,6 +62,10 @@ public class Movimiento {
     @ManyToOne
     @JoinColumn(name="cuenta_id", nullable = false)
     private Cuenta cuenta;
+    
+    @ManyToOne
+    @JoinColumn(name="cuentaAhorro_id", nullable = true)
+    private CuentaAhorro cuentaAhorro;
 
     @ManyToOne
     @JoinColumn(name= "tarjeta_id")
@@ -175,5 +179,18 @@ public class Movimiento {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+
+	public CuentaAhorro getCuentaAhorro() {
+		return cuentaAhorro;
+	}
+
+	public void setCuentaAhorro(CuentaAhorro cuentaAhorro) {
+		this.cuentaAhorro = cuentaAhorro;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
     
 }

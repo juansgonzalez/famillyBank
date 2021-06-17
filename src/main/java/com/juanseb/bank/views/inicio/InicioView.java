@@ -3,7 +3,10 @@ package com.juanseb.bank.views.inicio;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -299,21 +302,24 @@ public class InicioView extends HorizontalLayout {
 		List<Double> listaGastos = new ArrayList<Double>();
 		List<String> listaFechas = new ArrayList<String>();
 		
-		Date fechaUtilizadaActual = null;
+		LocalDate fechaLocalDate = null;
 		double gastoDiario = 0;
-		
-		for (Iterator iterator = movimientos.iterator(); iterator.hasNext();) {
-			Movimiento movimiento = (Movimiento) iterator.next();
-			if(fechaUtilizadaActual == null) { //Comprobamos si se acaba de entrar en el bucle para inicializar la fecha del movimiento
-				fechaUtilizadaActual = movimiento.getFecha();		
+		int contador = 0;
+		for (Movimiento movimiento : movimientos) {
+			if(fechaLocalDate == null) { //Comprobamos si se acaba de entrar en el bucle para inicializar la fecha del movimiento
+				fechaLocalDate = Instant.ofEpochMilli(movimiento.getFecha().getTime())
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
 			}
 			
 			// Si hemos cambiado de fecha del movimiento se procede a guardar los datos recogidos
-			if(!fechaUtilizadaActual.equals(movimiento.getFecha())) {
+			if(!fechaLocalDate.equals(Instant.ofEpochMilli(movimiento.getFecha().getTime()).atZone(ZoneId.systemDefault()).toLocalDate())) {
 				listaGastos.add(gastoDiario);
-				listaFechas.add(fechaUtilizadaActual.getYear()+"/"+Utils.getMonthForInt(fechaUtilizadaActual.getMonth()).substring(0, 3));
+				listaFechas.add(fechaLocalDate.getDayOfMonth()+"/"+fechaLocalDate.getMonth());
 				gastoDiario = 0; // Reiniciamos el contador del gasto
-				fechaUtilizadaActual = movimiento.getFecha(); // Almacenemos la fecha del nuevo gasto
+				fechaLocalDate = Instant.ofEpochMilli(movimiento.getFecha().getTime())
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate(); // Almacenemos la fecha del nuevo gasto
 			}
 			
 			// Si el movimiento que se ha realizado es un gasto lo sumamos al contador de gasto
@@ -322,13 +328,13 @@ public class InicioView extends HorizontalLayout {
 			}
 			
 			// Comprobamos si es el ultimo item del iterador y almacenamos sus datos
-			if(!iterator.hasNext()) {
+			if(movimientos.size() == contador-1) {
 				listaGastos.add(gastoDiario);
-				listaFechas.add(fechaUtilizadaActual.getYear()+"/"+Utils.getMonthForInt(fechaUtilizadaActual.getMonth()).substring(0, 3));
+				listaFechas.add(fechaLocalDate.getDayOfMonth()+"/"+fechaLocalDate.getMonth());
 			}
-			
-			
+			contador++;
 		}
+
 		
 		this.listadoGastosDiariosDiagrama = new Double[listaGastos.size()];
 		this.listadoGastosDiariosDiagrama = listaGastos.toArray(this.listadoGastosDiariosDiagrama);
@@ -389,7 +395,7 @@ public class InicioView extends HorizontalLayout {
 		for (int i = 0; i < listaCategorias.size(); i++) {
 			Categoria categoriaActual = listaCategorias.get(i);
 			String mesActual = String.valueOf(LocalDate.now().getMonthValue());
-			serieData[i] = Utils.obtenerGastos(this.movimientoService.obtenerMovimientosCuentaByCategoria(idCuenta,new MovimientoMesFilter(mesActual, categoriaActual.getId())));
+			serieData[i] = Utils.obtenerGastos(this.movimientoService.obtenerMovimientosCuentaByCategoriaAndUsuario(idCuenta,usuarioActual.getId(),new MovimientoMesFilter(mesActual, categoriaActual.getId())));
 		}
 		serie.setData(serieData);
 		return serieData;

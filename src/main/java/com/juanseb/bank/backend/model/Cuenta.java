@@ -31,6 +31,10 @@ public class Cuenta {
     @ManyToOne
     @JoinColumn(name="usuario_principal", nullable = false)
     private Usuario usuarioPrincipal;
+    
+    @OneToMany(mappedBy = "cuenta")
+    @JsonIgnore
+    List<CuentaAhorro> listaCuentaAhorro;
 
     //relaciones
 

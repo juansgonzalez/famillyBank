@@ -21,7 +21,9 @@ import java.util.List;
 
 public class CuentaDialog extends Dialog {
 
-    private CuentaService cuentaService;
+	private static final long serialVersionUID = 3043549201266941424L;
+	
+	private CuentaService cuentaService;
     private MovimientoService movimientoService;
 
     private Grid<Movimiento> grid;
@@ -38,11 +40,11 @@ public class CuentaDialog extends Dialog {
         super();
         this.movimientoService = movimientoService;
         this.cuentaService = cuentaService;
-        this.movimientosList = movimientoService.obtenerMovimientosDeCuenta(idCuenta);
+        this.movimientosList = this.movimientoService.obtenerMovimientosDeCuenta(idCuenta);
         setCloseOnEsc(true);
         setWidth("50%");
 
-        this.cuenta = cuentaService.obtenerCuentaById(idCuenta);
+        this.cuenta = this.cuentaService.obtenerCuentaById(idCuenta);
 
         createFormTarjeta();
         createGrid();

@@ -132,7 +132,7 @@ public class TarjetaDialog extends Dialog{
 	private void setDataProvider(){
 		ListDataProvider<Movimiento> listDataProvider;
 		listDataProvider = new ListDataProvider<>(movimientosList);
-		listDataProvider.setSortOrder(Movimiento::getFecha, SortDirection.DESCENDING);
+		listDataProvider.setSortOrder(Movimiento::getId, SortDirection.DESCENDING);
 		this.grid.setDataProvider(listDataProvider);
 	}
 
