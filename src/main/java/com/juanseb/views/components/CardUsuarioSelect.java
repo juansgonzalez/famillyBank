@@ -39,7 +39,7 @@ public class CardUsuarioSelect extends ClickableCard{
 
         // layout con el logo de ingenia bank
         HorizontalLayout imagenLayout = new HorizontalLayout();
-        Image ingeniaImage = new Image("images/"+usuario.getImage(), usuario.getNombreCorto());
+        Image ingeniaImage = new Image(usuario.getImage(), usuario.getNombreCorto());
         ingeniaImage.setWidth("40%");
         imagenLayout.add(ingeniaImage);
 

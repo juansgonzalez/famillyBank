@@ -134,7 +134,7 @@ public class MainView extends AppLayout {
         layout.add(viewTitle);
         
         Avatar avatar = new Avatar();
-        avatar.setImage("images/"+getImageCurrentUser());
+        avatar.setImage(getImageCurrentUser());
         avatar.setName(getFullNameCurrentUser());
         layout.add(avatar);
         layout.add(createAvatarMenu());
