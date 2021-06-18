@@ -66,6 +66,7 @@ public class MovimientosView extends VerticalLayout {
     public MovimientosView(MovimientoService movimientoService, UsuarioService usuarioService,CategoriaService categoriaService,TarjetaService tarjetaService, CuentaService cuentaService, UsuarioCuentaService usuarioCuentaService){
         addClassName("movimientos-view");
         setPadding(true);
+        setHeightFull();
 
         this.usuarioService =  usuarioService;
         this.movimientoService = movimientoService;
@@ -217,7 +218,7 @@ public class MovimientosView extends VerticalLayout {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER,
                 GridVariant.LUMO_NO_ROW_BORDERS,
                 GridVariant.LUMO_ROW_STRIPES); //para que las filas pares e impares tengan colores diferentes
-
+        
         return grid;
     }
 }
