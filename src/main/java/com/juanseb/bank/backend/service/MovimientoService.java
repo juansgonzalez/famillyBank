@@ -43,4 +43,10 @@ public interface MovimientoService {
 	public Movimiento save(Movimiento movimientoEditable);
 
 	List<Movimiento> obtenerMovimientosCuentaByCategoriaAndUsuario(Long idCuenta, Long idUsuario, MovimientoMesFilter filtroMovimiento);
+
+	public void eliminar(Movimiento movimiento);
+
+	public Movimiento actualizarMovimiento(Movimiento movimiento);
+
+	public Movimiento obtenerMovimientoId(Long id);
 }

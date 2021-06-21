@@ -249,6 +249,11 @@ public class MovimientoServiceImpl implements MovimientoService {
 			throw new Exception();
 		}
 	}
+	
+	@Override
+	public Movimiento actualizarMovimiento(Movimiento movimiento) {
+		return movimientoRepository.save(movimiento);
+	}
 
 	@Override
 	public List<Movimiento> obtenerMovimientosDeCuentaOrdenadosFecha(Long idCuenta) {
@@ -299,6 +304,16 @@ public class MovimientoServiceImpl implements MovimientoService {
 		}	
 		return movimientoRepository.obtenerMovimientosDeCuentaByCuentaAhorro(idCuentaAhorro, dateInit, datefin);
 
+	}
+
+	@Override
+	public void eliminar(Movimiento movimiento) {
+		movimientoRepository.delete(movimiento);
+	}
+
+	@Override
+	public Movimiento obtenerMovimientoId(Long id) {
+		return movimientoRepository.findById(id).get();
 	}
 
 

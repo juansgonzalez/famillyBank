@@ -88,7 +88,7 @@ public class MovimientosView extends VerticalLayout {
         cabecera.setWidthFull();
         cabecera.add(new H2("Movimientos"));
         Button botonCrear = new Button("Nuevo Movimiento", ClickEvent ->{
-    		openMovimientoForm();
+    		openMovimientoForm(null);
     	});
         botonCrear.getElement().getStyle().set("margin-left", "auto");
         botonCrear.getElement().getStyle().set("margin-top", "auto");
@@ -101,8 +101,8 @@ public class MovimientosView extends VerticalLayout {
     }
 
 
-    private void openMovimientoForm() {
-		movimientoForm = new MovimientoForm(idCuentaActual, this.categoriaService, this.usuarioService, this.tarjetaService);
+    private void openMovimientoForm(Movimiento movimiento) {
+		movimientoForm = new MovimientoForm(idCuentaActual, this.categoriaService, this.usuarioService, this.tarjetaService,movimiento);
 		
 		movimientoForm.open();
 		
@@ -114,56 +114,29 @@ public class MovimientosView extends VerticalLayout {
 			public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
 				if(!event.isOpened()) { // Check if the form was closed
 					if(FORM_ACTION.SAVE.equals(movimientoForm.getAction())) { // Check if the form was closed with the save button
+						movimientoEditable = movimientoForm.getMovimiento();
+						if(movimientoForm.editar) {
+							try {
+								deshacerMovimiento(null);
+								nuevoMovimiento();
+								refreshGrid();
 
-						try {
-							movimientoEditable = movimientoForm.getMovimiento();
-							
-							Usuario u = new Usuario();
-							u.setId(movimientoEditable.getUsuario().getId());
-
-							Cuenta c = new Cuenta();
-							c.setId(idCuentaActual);
-
-							UsuarioCuentaId uc = new UsuarioCuentaId();
-							uc.setCuenta(c);
-							uc.setUsuario(u);
-
-							UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
-
-							Double saldoActualUsuario = usuarioCuenta.getSaldoEnCuenta();
-
-							if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
-								saldoActualUsuario -= movimientoEditable.getCantidad();
-							}else {
-								saldoActualUsuario += movimientoEditable.getCantidad();
+								new ColorNotification("Se ha editado el movimiento con exito","green").open();
+							} catch (Exception e) {
+								new ColorNotification("Ha ocurrido un error al editar movimiento intentelo mas tarde. Si el problema persiste notifique al administrador","red").open();
 							}
-							usuarioCuenta.setSaldoEnCuenta(saldoActualUsuario);
-
-							usuarioCuenta = usuarioCuentaService.save(usuarioCuenta);
-							
-							Cuenta cuentaObtenida = cuentaService.obtenerCuentaById(idCuentaActual);
-
-							Double saldoCuentaNuevo = cuentaObtenida.getSaldo();
-							if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
-								saldoCuentaNuevo -= movimientoEditable.getCantidad();			
-							}else {
-								saldoCuentaNuevo += movimientoEditable.getCantidad();			
-							}
-							cuentaObtenida.setSaldo(saldoCuentaNuevo);	
-							
-							Cuenta CuentaGuardada = cuentaService.save(cuentaObtenida);
-							movimientoEditable.setCuenta(CuentaGuardada);
-							
-							movimientoEditable.setSaldoActual(CuentaGuardada.getSaldo());
-							// Save in the DB 
-							movimientoService.save(movimientoEditable);
-							
-							// Refresh the grid to display all the Products
-							refreshGrid();
-							
-							new ColorNotification("Se ha creado el movimiento con exito","green").open();
-						}catch(Exception e) {
-							new ColorNotification("Ha ocurrido un error al crear movimiento intentelo mas tarde. Si el problema persiste notifique al administrador","red").open();
+						}else {
+							try {
+								
+								nuevoMovimiento();
+								
+								// Refresh the grid to display all the Products
+								refreshGrid();
+								
+								new ColorNotification("Se ha creado el movimiento con exito","green").open();
+							}catch(Exception e) {
+								new ColorNotification("Ha ocurrido un error al crear movimiento intentelo mas tarde. Si el problema persiste notifique al administrador","red").open();
+							}		
 						}
 					}
 				}
@@ -204,14 +177,15 @@ public class MovimientosView extends VerticalLayout {
 
         // indicamos columnas y el orden
         grid.setColumns();
-        grid.addComponentColumn(movimiento -> new IconoMovimientoTarjeta(movimiento)).setHeader("Tarjeta").setFlexGrow(1);
-        grid.addColumn(movimiento -> movimiento.getCantidad()+" €").setHeader("Cantidad").setFlexGrow(1).setSortable(true);
+        grid.addComponentColumn(movimiento -> new IconoMovimientoTarjeta(movimiento)).setHeader("Tarjeta").setWidth("125px").setFlexGrow(0);
+        grid.addColumn(movimiento -> movimiento.getCantidad()+" €").setHeader("Cantidad").setWidth("125px").setFlexGrow(0).setSortable(true);
         grid.addColumn(movimiento -> movimiento.getConcepto()).setHeader("Concepto").setFlexGrow(1).setSortable(true);
         grid.addColumn(movimiento -> movimiento.getCategoria().getNombre()).setHeader("Categoria").setFlexGrow(1).setSortable(true);
         if(Utils.isPrincipal(usuarioActual)) {
-        	grid.addColumn(movimiento -> movimiento.getUsuario().getNombreCorto()).setHeader("Usuario").setFlexGrow(1).setSortable(true);
+        	grid.addColumn(movimiento -> movimiento.getUsuario().getNombreCorto()).setHeader("Usuario").setFlexGrow(0).setSortable(true);
         }
         grid.addColumn(movimiento -> dateFormat.format(movimiento.getFecha())).setHeader("Fecha").setWidth("125px").setFlexGrow(0).setSortable(true);
+        grid.addComponentColumn(movimiento -> botonesEditarMovimiento(movimiento)).setWidth("125px").setFlexGrow(1).setSortable(false);
 
 
         // estilos del grid
@@ -221,4 +195,128 @@ public class MovimientosView extends VerticalLayout {
         
         return grid;
     }
+
+
+	private HorizontalLayout botonesEditarMovimiento(Movimiento movimiento) {
+
+	    HorizontalLayout layout =  new HorizontalLayout();
+	    layout.setWidthFull();
+	    
+	    // Create remove button with cick event acction
+	    Button buttonRemove = new Button("Eliminar", clickEvent -> {
+	        try {
+	        	deshacerMovimiento(movimiento);
+	        	
+				new ColorNotification("Se ha eliminaro el movimiento con exito","green").open();
+
+	        	// Refresh the grid list
+	        	refreshGrid();
+	        	
+	        }catch(Exception e) {
+	        	System.out.println(e);
+	        }
+	    });
+	    
+	    // Create update button with cick event acction
+	    Button buttonUpdate = new Button("Editar", clickEvent -> {
+	    	// Open the Dialog with the Product info form
+	    	openMovimientoForm(movimiento);
+	    });
+	    
+	    // Set Style to the buttons
+	    buttonRemove.getElement().getStyle().set("color", "red");
+	    buttonUpdate.getElement().getStyle().set("color", "green");
+
+	    // Add the 2 buttons to the horizontal grid
+	    layout.add(buttonUpdate);
+	    layout.add(buttonRemove);
+		return layout;
+	
+	}
+	private void deshacerMovimiento(Movimiento movimiento) {
+		Movimiento movimientoDeshacer = null ;
+		if(movimiento != null) {
+			movimientoDeshacer = movimiento;										
+		}else {
+			movimientoDeshacer = movimientoService.obtenerMovimientoId(movimientoEditable.getId());					
+		}
+		
+		Usuario u = new Usuario();
+		u.setId(movimientoDeshacer.getUsuario().getId());
+		
+		Cuenta c = new Cuenta();
+		c.setId(idCuentaActual);
+		
+		UsuarioCuentaId uc = new UsuarioCuentaId();
+		uc.setCuenta(c);
+		uc.setUsuario(u);
+		
+		UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
+		// Revertimos los cambios del anterior movimiento
+		if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
+			usuarioCuenta.setSaldoEnCuenta(usuarioCuenta.getSaldoEnCuenta() + movimientoDeshacer.getCantidad());
+		}else {
+			usuarioCuenta.setSaldoEnCuenta(usuarioCuenta.getSaldoEnCuenta() - movimientoDeshacer.getCantidad());									
+		}
+		
+		usuarioCuentaService.save(usuarioCuenta);
+		
+		
+		Cuenta cuentaBd = movimientoDeshacer.getCuenta();
+		
+		if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
+			cuentaBd.setSaldo(cuentaBd.getSaldo() + movimientoDeshacer.getCantidad());
+		}else {
+			cuentaBd.setSaldo(cuentaBd.getSaldo() - movimientoDeshacer.getCantidad());									
+		}
+		
+		Cuenta cuentaGuardada = cuentaService.save(cuentaBd);
+		
+		movimientoDeshacer.setSaldoActual(cuentaGuardada.getSaldo());
+
+		movimientoService.eliminar(movimientoDeshacer);
+	}
+
+	private void nuevoMovimiento() {
+		Usuario u = new Usuario();
+		u.setId(movimientoEditable.getUsuario().getId());
+		
+		Cuenta c = new Cuenta();
+		c.setId(idCuentaActual);
+		
+		UsuarioCuentaId uc = new UsuarioCuentaId();
+		uc.setCuenta(c);
+		uc.setUsuario(u);
+		
+		UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
+		
+		Double saldoActualUsuario = usuarioCuenta.getSaldoEnCuenta();
+		
+		if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
+			saldoActualUsuario -= movimientoEditable.getCantidad();
+		}else {
+			saldoActualUsuario += movimientoEditable.getCantidad();
+		}
+		usuarioCuenta.setSaldoEnCuenta(saldoActualUsuario);
+		
+		usuarioCuenta = usuarioCuentaService.save(usuarioCuenta);
+		
+		Cuenta cuentaObtenida = cuentaService.obtenerCuentaById(idCuentaActual);
+		
+		Double saldoCuentaNuevo = cuentaObtenida.getSaldo();
+		if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
+			saldoCuentaNuevo -= movimientoEditable.getCantidad();			
+		}else {
+			saldoCuentaNuevo += movimientoEditable.getCantidad();			
+		}
+		cuentaObtenida.setSaldo(saldoCuentaNuevo);	
+		
+		Cuenta CuentaGuardada = cuentaService.save(cuentaObtenida);
+		movimientoEditable.setCuenta(CuentaGuardada);
+		
+		movimientoEditable.setSaldoActual(CuentaGuardada.getSaldo());
+		// Save in the DB 
+		movimientoService.save(movimientoEditable);
+	}
+
 }
