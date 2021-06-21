@@ -20,7 +20,7 @@ import com.juanseb.bank.backend.model.Categoria;
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Tarjeta;
-import com.juanseb.bank.backend.model.TipoMovimiento;
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
 import com.juanseb.bank.backend.payload.filter.MovimientoMesFilter;
 import com.juanseb.bank.backend.payload.filter.MovimientosFilter;
 import com.juanseb.bank.backend.repository.CategoriaRepository;

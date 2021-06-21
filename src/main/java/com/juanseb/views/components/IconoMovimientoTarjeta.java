@@ -1,7 +1,7 @@
 package com.juanseb.views.components;
 
 import com.juanseb.bank.backend.model.Movimiento;
-import com.juanseb.bank.backend.model.TipoMovimiento;
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
 import com.juanseb.bank.backend.utils.Utils;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;

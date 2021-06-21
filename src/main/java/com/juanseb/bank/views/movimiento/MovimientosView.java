@@ -1,11 +1,15 @@
 package com.juanseb.bank.views.movimiento;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
-import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.model.UsuarioCuenta;
 import com.juanseb.bank.backend.model.UsuarioCuentaId;
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
+import com.juanseb.bank.backend.model.enumerado.TipoUsuarioCuenta;
 import com.juanseb.bank.backend.service.CategoriaService;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.MovimientoService;
@@ -24,20 +28,17 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.GeneratedVaadinDialog;
+import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 @Route(value = "movimientos", layout = MainView.class)
 @PageTitle("Movimientos")
@@ -177,7 +178,7 @@ public class MovimientosView extends VerticalLayout {
 
         // indicamos columnas y el orden
         grid.setColumns();
-        grid.addComponentColumn(movimiento -> new IconoMovimientoTarjeta(movimiento)).setHeader("Tarjeta").setWidth("125px").setFlexGrow(0);
+        grid.addComponentColumn(movimiento -> new IconoMovimientoTarjeta(movimiento)).setHeader("Tarjeta").setWidth("200px").setFlexGrow(0);
         grid.addColumn(movimiento -> movimiento.getCantidad()+" €").setHeader("Cantidad").setWidth("125px").setFlexGrow(0).setSortable(true);
         grid.addColumn(movimiento -> movimiento.getConcepto()).setHeader("Concepto").setFlexGrow(1).setSortable(true);
         grid.addColumn(movimiento -> movimiento.getCategoria().getNombre()).setHeader("Categoria").setFlexGrow(1).setSortable(true);
@@ -252,6 +253,7 @@ public class MovimientosView extends VerticalLayout {
 		uc.setUsuario(u);
 		
 		UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
+		
 		// Revertimos los cambios del anterior movimiento
 		if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
 			usuarioCuenta.setSaldoEnCuenta(usuarioCuenta.getSaldoEnCuenta() + movimientoDeshacer.getCantidad());
@@ -261,8 +263,21 @@ public class MovimientosView extends VerticalLayout {
 		
 		usuarioCuentaService.save(usuarioCuenta);
 		
-		
 		Cuenta cuentaBd = movimientoDeshacer.getCuenta();
+
+		uc.setUsuario(cuentaBd.getUsuarioPrincipal());
+
+		UsuarioCuenta usuarioCuentaPrincipal = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
+		
+		if(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta())) {
+			if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
+				usuarioCuentaPrincipal.setSaldoEnCuenta(usuarioCuentaPrincipal.getSaldoEnCuenta() + movimientoDeshacer.getCantidad());
+			}else {
+				usuarioCuentaPrincipal.setSaldoEnCuenta(usuarioCuentaPrincipal.getSaldoEnCuenta() - movimientoDeshacer.getCantidad());									
+			}			
+			usuarioCuentaService.save(usuarioCuentaPrincipal);
+		}
+		
 		
 		if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
 			cuentaBd.setSaldo(cuentaBd.getSaldo() + movimientoDeshacer.getCantidad());
@@ -302,6 +317,20 @@ public class MovimientosView extends VerticalLayout {
 		usuarioCuenta = usuarioCuentaService.save(usuarioCuenta);
 		
 		Cuenta cuentaObtenida = cuentaService.obtenerCuentaById(idCuentaActual);
+		
+		if(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta()) && !cuentaObtenida.getUsuarioPrincipal().equals(movimientoEditable.getUsuario())) {
+			uc.setUsuario(cuentaObtenida.getUsuarioPrincipal());
+			UsuarioCuenta usuarioCuentaPrincipal = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
+			saldoActualUsuario = usuarioCuentaPrincipal.getSaldoEnCuenta();
+			
+			if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
+				saldoActualUsuario -= movimientoEditable.getCantidad();
+			}else {
+				saldoActualUsuario += movimientoEditable.getCantidad();
+			}
+			usuarioCuentaPrincipal.setSaldoEnCuenta(saldoActualUsuario);
+			usuarioCuenta = usuarioCuentaService.save(usuarioCuentaPrincipal);
+		}
 		
 		Double saldoCuentaNuevo = cuentaObtenida.getSaldo();
 		if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {

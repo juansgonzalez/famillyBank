@@ -2,11 +2,14 @@ package com.juanseb.bank.backend.model;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.juanseb.bank.backend.model.enumerado.TipoUsuarioCuenta;
 
 
 @Entity
@@ -20,7 +23,12 @@ public class UsuarioCuenta {
 	
 	@EmbeddedId
     private UsuarioCuentaId id = new UsuarioCuentaId();
-	private Double saldoEnCuenta;	
+	
+	@Column(nullable = false)
+	private Double saldoEnCuenta;
+	
+	@Column(nullable = false)
+	private TipoUsuarioCuenta tipoUsuarioCuenta;
 
 	public UsuarioCuentaId getId() {
 		return id;
@@ -54,6 +62,14 @@ public class UsuarioCuenta {
 
 	public void setSaldoEnCuenta(Double saldoEnCuenta) {
 		this.saldoEnCuenta = saldoEnCuenta;
+	}
+
+	public TipoUsuarioCuenta getTipoUsuarioCuenta() {
+		return tipoUsuarioCuenta;
+	}
+
+	public void setTipoUsuarioCuenta(TipoUsuarioCuenta tipoUsuarioCuenta) {
+		this.tipoUsuarioCuenta = tipoUsuarioCuenta;
 	}
 
 	 

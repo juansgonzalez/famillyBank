@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.juanseb.bank.backend.model.CuentaAhorro;
 import com.juanseb.bank.backend.model.Movimiento;
-import com.juanseb.bank.backend.model.TipoMovimiento;
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
 import com.juanseb.bank.backend.service.CategoriaService;
 import com.juanseb.bank.backend.service.CuentaAhorroService;
 import com.juanseb.bank.backend.service.MovimientoService;

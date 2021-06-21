@@ -6,11 +6,9 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -31,10 +29,14 @@ import com.github.appreciated.apexcharts.config.legend.Position;
 import com.github.appreciated.apexcharts.config.stroke.Curve;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.juanseb.bank.backend.model.Categoria;
+import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Tarjeta;
-import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
+import com.juanseb.bank.backend.model.UsuarioCuenta;
+import com.juanseb.bank.backend.model.UsuarioCuentaId;
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
+import com.juanseb.bank.backend.model.enumerado.TipoUsuarioCuenta;
 import com.juanseb.bank.backend.payload.filter.MovimientoMesFilter;
 import com.juanseb.bank.backend.service.CategoriaService;
 import com.juanseb.bank.backend.service.CuentaService;
@@ -113,10 +115,28 @@ public class InicioView extends HorizontalLayout {
 			
 			this.idCuenta = (long) UI.getCurrent().getSession().getAttribute("idCuenta");
 			usuarioActual = user.get();
+			Cuenta c = new Cuenta();
+			c.setId(this.idCuenta);
 			
+			UsuarioCuentaId id = new UsuarioCuentaId();
+			id.setCuenta(c);
+			id.setUsuario(usuarioActual);
+			
+			UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(id).get();
+			
+			Cuenta cuenta = cuentaService.obtenerCuentaById(this.idCuenta);
 			// Creamos el layout de la parte izquierda
 			VerticalLayout leftLayout = new VerticalLayout();
 			leftLayout.setWidth("60%");
+
+			H2 cuentaSaldo = new H2("Saldo en cuenta: "+ cuenta.getSaldo());
+			cuentaSaldo.setVisible(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta()) || Utils.isPrincipal(usuarioActual));
+			leftLayout.add(cuentaSaldo);
+			
+			Hr limiter1 = new Hr();
+			limiter1.setWidthFull();
+			limiter1.setVisible(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta()) || Utils.isPrincipal(usuarioActual));
+			leftLayout.add(limiter1);
 			
 			// añadimos el layout de titulo de las tarjetas a la parte izquierda
 			leftLayout.add(new TitleWithLink("Tarjetas","Ver Tarjetas","tarjetas"));
@@ -153,10 +173,19 @@ public class InicioView extends HorizontalLayout {
 				listaMovimientos = this.movimientoService.obtenerMovimientosDeCuentaByUsuarioOrdenadosFecha(idCuenta,usuarioActual.getId());
 				
 			}
-			// Obtenemos solo los primeros 6 movimientos para mostrar en la pantalla principal
-			if(listaMovimientos.size() > 6) {
-				listaMovimientos = listaMovimientos.subList(0, 6);
+			
+			int numeroMovimientos;
+			if(Utils.isPrincipal(usuarioActual)) {
+				numeroMovimientos = 3;				
+			}else {
+				numeroMovimientos = 6;
 			}
+			
+			// Obtenemos solo los primeros 6 movimientos para mostrar en la pantalla principal
+			if(listaMovimientos.size() > numeroMovimientos) {
+				listaMovimientos = listaMovimientos.subList(0, numeroMovimientos);
+			}
+			
 			grid.setDataProvider(new ListDataProvider<>(listaMovimientos));
 			
 			// Añadimos el titulo y el grid para moviminetos a la vista Izquierda
