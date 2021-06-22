@@ -5,7 +5,10 @@ import java.util.Optional;
 
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Usuario;
+import com.juanseb.bank.backend.model.UsuarioCuenta;
+import com.juanseb.bank.backend.model.UsuarioCuentaId;
 import com.juanseb.bank.backend.service.CuentaService;
+import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
 import com.juanseb.bank.views.cuentaAhorro.CuentaAhorroView;
@@ -55,29 +58,29 @@ public class MainView extends AppLayout {
 	private Tabs menu;
     private H1 viewTitle;
     
-    private List<Cuenta> listaCuentasUsuario;
+    private List<UsuarioCuenta> listaUsuarioCuenta;
     private Usuario usuario;
 
     private UsuarioService usuarioService;
-    private CuentaService cuentaService;
+    private UsuarioCuentaService usuarioCuentaService;
     private Long idUsuarioPrincipal;
 	private CuentaSelectComponent cuentaSelect;
 
 
-    public MainView(UsuarioService usuarioService, CuentaService cuentaService) {
+    public MainView(UsuarioService usuarioService, CuentaService cuentaService, UsuarioCuentaService usuarioCuentaService) {
         this.menu = new Tabs();
 		this.usuarioService = usuarioService;
-        this.cuentaService = cuentaService;
+        this.usuarioCuentaService = usuarioCuentaService;
         
         Optional<Usuario> user = Utils.getCurrentUser(this.usuarioService);
         
         if(user.isPresent()) {
         	this.usuario = user.get();
-        	listaCuentasUsuario = this.cuentaService.obtenerTodasCuentasByUsuarioId(user.get().getId());
+        	listaUsuarioCuenta = this.usuarioCuentaService.obtenerCuentasDeUsuario(usuario.getId());
         	if(UI.getCurrent().getSession().getAttribute("idCuenta") == null) {
-        		if(listaCuentasUsuario.size() > 1) {
-					UI.getCurrent().getSession().setAttribute("idCuenta", listaCuentasUsuario.get(0).getId());     
-        			cuentaSelect = new CuentaSelectComponent(listaCuentasUsuario,user.get().getNombreCompleto());
+        		if(listaUsuarioCuenta.size() > 1) {
+					UI.getCurrent().getSession().setAttribute("idCuenta", listaUsuarioCuenta.get(0).getId());     
+        			cuentaSelect = new CuentaSelectComponent(listaUsuarioCuenta,user.get().getNombreCompleto());
         			cuentaSelect.open();
         			
         			cuentaSelect.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
@@ -95,8 +98,8 @@ public class MainView extends AppLayout {
         				}
         			});
         			
-        		}else if(listaCuentasUsuario.size() == 1) {
-        			Cuenta cuenta = listaCuentasUsuario.get(0);
+        		}else if(listaUsuarioCuenta.size() == 1) {
+        			Cuenta cuenta = listaUsuarioCuenta.get(0).getCuenta();
         			UI.getCurrent().getSession().setAttribute("idCuenta", cuenta.getId());
         			UI.getCurrent().getSession().setAttribute("idUsuarioPrincipal", cuenta.getUsuarioPrincipal().getId()); 
         			UI.getCurrent().getPage().reload();
@@ -217,7 +220,7 @@ public class MainView extends AppLayout {
         contextMenu.setTarget(hl);
 
         contextMenu.addItem("Cambiar Cuenta", e -> {
-        	cuentaSelect = new CuentaSelectComponent(listaCuentasUsuario,usuario.getNombreCompleto());
+        	cuentaSelect = new CuentaSelectComponent(listaUsuarioCuenta,usuario.getNombreCompleto());
 			cuentaSelect.open();
 			
 			cuentaSelect.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {

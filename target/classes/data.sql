@@ -37,7 +37,7 @@ UPDATE cuenta SET saldo = 3025.85-2.87 WHERE id=2;
 -- relaciones usuario_cuenta
 INSERT INTO usuario_cuenta (saldo_en_cuenta, usuario_id, cuenta_id, tipo_usuario_cuenta) values
     (3000-35.04-20.04-50.0,1, 1, 2),
-    (50.00, 3, 1, 1),
+    (50.00, 3, 1, 0),
     (3025.85-2.87,2, 2, 1),
     (3025.85-2.87,3, 2, 1)
     ;

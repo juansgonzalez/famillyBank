@@ -135,5 +135,11 @@ public class Utils {
 		
 		
 	}
+	
+	public static String formatearSaldo(Double saldo) {
+		DecimalFormat df = new DecimalFormat("#.##");
+	    String saldoFormateado = df.format(saldo);
+		return saldoFormateado;
+	}
 
 }

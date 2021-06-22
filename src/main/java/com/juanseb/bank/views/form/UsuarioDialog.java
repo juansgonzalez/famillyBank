@@ -69,7 +69,6 @@ public class UsuarioDialog extends Dialog{
     }
 
     private void createFormUsuario() {
-		DecimalFormat df = new DecimalFormat("#.##");
 
         nombreUsuario = new TextField("Usuario");
         nombreUsuario.setId("nombreUsuario");
@@ -80,7 +79,7 @@ public class UsuarioDialog extends Dialog{
         usuarioSaldo = new TextField("Saldo");
         usuarioSaldo.setId("saldo");
         usuarioSaldo.setEnabled(false);
-        usuarioSaldo.setValue(df.format(Utils.obtenerSaldoEnCuenta(idCuenta, idUsuario, usuarioCuentaService)));
+        usuarioSaldo.setValue(Utils.formatearSaldo(Utils.obtenerSaldoEnCuenta(idCuenta, idUsuario, usuarioCuentaService)));
         setColspan(usuarioSaldo, 1);
 
         usuarioData = new FormLayout(nombreUsuario, usuarioSaldo);

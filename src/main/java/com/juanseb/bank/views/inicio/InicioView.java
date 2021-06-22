@@ -129,7 +129,7 @@ public class InicioView extends HorizontalLayout {
 			VerticalLayout leftLayout = new VerticalLayout();
 			leftLayout.setWidth("60%");
 
-			H2 cuentaSaldo = new H2("Saldo en cuenta: "+ cuenta.getSaldo());
+			H2 cuentaSaldo = new H2("Saldo en cuenta: "+ Utils.formatearSaldo(cuenta.getSaldo()));
 			cuentaSaldo.setVisible(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta()) || Utils.isPrincipal(usuarioActual));
 			leftLayout.add(cuentaSaldo);
 			
@@ -191,7 +191,6 @@ public class InicioView extends HorizontalLayout {
 			// Añadimos el titulo y el grid para moviminetos a la vista Izquierda
 			leftLayout.add(new TitleWithLink("Movimientos","Ver mas","movimientos"),grid);
 			
-			DecimalFormat df = new DecimalFormat("#.##");
 			
 			// Creamos la parte derecha de la vista
 			VerticalLayout rightLayout = new VerticalLayout();
@@ -205,7 +204,7 @@ public class InicioView extends HorizontalLayout {
 			tituloAnalisis.getElement().getStyle().set("margin-right", "auto");
 			textAnalisis.add(tituloAnalisis);
 			
-			H2 balance = new H2(df.format(Utils.obtenerSaldoEnCuenta(idCuenta, usuarioActual.getId(), usuarioCuentaService)) + "€");
+			H2 balance = new H2(Utils.formatearSaldo(Utils.obtenerSaldoEnCuenta(idCuenta, usuarioActual.getId(), usuarioCuentaService)) + "€");
 			balance.getElement().getStyle().set("margin-top", "0");
 			balance.getElement().getStyle().set("margin-left", "auto");
 			textAnalisis.add(balance);
@@ -234,14 +233,14 @@ public class InicioView extends HorizontalLayout {
 			double ingresosMes = Utils.obtenerIngresos(movimientosMes); 
 			
 			
-			Span ingresosMensaual = new Span("Ingresos del mes: "+df.format(ingresosMes)+" €");
+			Span ingresosMensaual = new Span("Ingresos del mes: "+Utils.formatearSaldo(ingresosMes)+" €");
 			ingresosMensaual.getElement().getStyle().set("margin-top", "0");
 			ingresosMensaual.getElement().getStyle().set("margin-right", "auto");
 			ingresosMensaual.getElement().getStyle().set("color", "#20F14E");
 			ingresosMensaual.getElement().getStyle().set("size", "16px");
 			gastos.add(ingresosMensaual);
 			
-			Span gastosMensaual = new Span("Gastos del mes: "+df.format(gastosMes)+" €");
+			Span gastosMensaual = new Span("Gastos del mes: "+Utils.formatearSaldo(gastosMes)+" €");
 			gastosMensaual.getElement().getStyle().set("margin-top", "0");
 			gastosMensaual.getElement().getStyle().set("margin-left", "auto");
 			gastosMensaual.getElement().getStyle().set("color", "#FF0F0F");
@@ -356,12 +355,12 @@ public class InicioView extends HorizontalLayout {
 				gastoDiario += movimiento.getCantidad();					
 			}
 			
-			// Comprobamos si es el ultimo item del iterador y almacenamos sus datos
-			if(movimientos.size() == contador-1) {
-				listaGastos.add(gastoDiario);
-				listaFechas.add(fechaLocalDate.getDayOfMonth()+"/"+fechaLocalDate.getMonth());
-			}
 			contador++;
+		}
+		// Comprobamos si es el ultimo item del iterador y almacenamos sus datos
+		if(movimientos.size() == contador && movimientos.size() != 0) {
+			listaGastos.add(gastoDiario);
+			listaFechas.add(fechaLocalDate.getDayOfMonth()+"/"+fechaLocalDate.getMonth());
 		}
 
 		
