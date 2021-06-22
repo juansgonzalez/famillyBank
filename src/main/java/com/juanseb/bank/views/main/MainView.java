@@ -6,7 +6,6 @@ import java.util.Optional;
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.model.UsuarioCuenta;
-import com.juanseb.bank.backend.model.UsuarioCuentaId;
 import com.juanseb.bank.backend.service.CuentaService;
 import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
@@ -220,6 +219,7 @@ public class MainView extends AppLayout {
         contextMenu.setTarget(hl);
 
         contextMenu.addItem("Cambiar Cuenta", e -> {
+        	listaUsuarioCuenta = this.usuarioCuentaService.obtenerCuentasDeUsuario(usuario.getId());
         	cuentaSelect = new CuentaSelectComponent(listaUsuarioCuenta,usuario.getNombreCompleto());
 			cuentaSelect.open();
 			

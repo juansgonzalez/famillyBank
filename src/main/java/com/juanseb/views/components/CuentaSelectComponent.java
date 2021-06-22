@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.UsuarioCuenta;
+import com.juanseb.bank.backend.utils.Utils;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -56,7 +57,7 @@ public class CuentaSelectComponent extends Dialog{
 		
 		grid.addColumn(c -> c.getCuenta().getUsuarioPrincipal().getNombreCorto()).setHeader("Usuario Principal").setFlexGrow(1);
 		grid.addColumn(c -> c.getCuenta().getIban()).setHeader("Iban").setFlexGrow(1);
-        grid.addColumn(c -> c.getSaldoEnCuenta()).setHeader("Saldo").setFlexGrow(1);
+        grid.addColumn(c -> Utils.formatearSaldo(c.getSaldoEnCuenta())).setHeader("Saldo").setFlexGrow(1);
 
         return grid;
 	}

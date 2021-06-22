@@ -1,7 +1,5 @@
 package com.juanseb.bank.views.inicio;
 
-
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
