@@ -16,4 +16,6 @@ public interface UsuarioCuentaService {
 	
 	public boolean exist(UsuarioCuentaId id);
 
+	public List<UsuarioCuenta> obtenerUsuariosIgualesByCuenta(Long idCuentaActual);
+
 }

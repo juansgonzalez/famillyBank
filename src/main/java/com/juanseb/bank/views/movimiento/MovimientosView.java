@@ -254,28 +254,30 @@ public class MovimientosView extends VerticalLayout {
 		
 		UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
 		
-		// Revertimos los cambios del anterior movimiento
-		if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
-			usuarioCuenta.setSaldoEnCuenta(usuarioCuenta.getSaldoEnCuenta() + movimientoDeshacer.getCantidad());
-		}else {
-			usuarioCuenta.setSaldoEnCuenta(usuarioCuenta.getSaldoEnCuenta() - movimientoDeshacer.getCantidad());									
-		}
-		
-		usuarioCuentaService.save(usuarioCuenta);
 		
 		Cuenta cuentaBd = movimientoDeshacer.getCuenta();
-
-		uc.setUsuario(cuentaBd.getUsuarioPrincipal());
-
-		UsuarioCuenta usuarioCuentaPrincipal = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
 		
 		if(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta())) {
+			List<UsuarioCuenta> usuarioCuentaIguales = usuarioCuentaService.obtenerUsuariosIgualesByCuenta(idCuentaActual);
+			for (int i = 0; i < usuarioCuentaIguales.size(); i++) {
+				UsuarioCuenta usuarioCuentaActual = usuarioCuentaIguales.get(i);
+				if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
+					usuarioCuentaActual.setSaldoEnCuenta(usuarioCuentaActual.getSaldoEnCuenta() + movimientoDeshacer.getCantidad());
+				}else {
+					usuarioCuentaActual.setSaldoEnCuenta(usuarioCuentaActual.getSaldoEnCuenta() - movimientoDeshacer.getCantidad());									
+				}			
+				usuarioCuentaService.save(usuarioCuentaActual);
+			}
+		}else {
+
+			// Revertimos los cambios del anterior movimiento
 			if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
-				usuarioCuentaPrincipal.setSaldoEnCuenta(usuarioCuentaPrincipal.getSaldoEnCuenta() + movimientoDeshacer.getCantidad());
+				usuarioCuenta.setSaldoEnCuenta(usuarioCuenta.getSaldoEnCuenta() + movimientoDeshacer.getCantidad());
 			}else {
-				usuarioCuentaPrincipal.setSaldoEnCuenta(usuarioCuentaPrincipal.getSaldoEnCuenta() - movimientoDeshacer.getCantidad());									
-			}			
-			usuarioCuentaService.save(usuarioCuentaPrincipal);
+				usuarioCuenta.setSaldoEnCuenta(usuarioCuenta.getSaldoEnCuenta() - movimientoDeshacer.getCantidad());									
+			}
+			
+			usuarioCuentaService.save(usuarioCuenta);
 		}
 		
 		
@@ -293,6 +295,7 @@ public class MovimientosView extends VerticalLayout {
 	}
 
 	private void nuevoMovimiento() {
+		
 		Usuario u = new Usuario();
 		u.setId(movimientoEditable.getUsuario().getId());
 		
@@ -304,32 +307,35 @@ public class MovimientosView extends VerticalLayout {
 		uc.setUsuario(u);
 		
 		UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
-		
-		Double saldoActualUsuario = usuarioCuenta.getSaldoEnCuenta();
-		
-		if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
-			saldoActualUsuario -= movimientoEditable.getCantidad();
-		}else {
-			saldoActualUsuario += movimientoEditable.getCantidad();
-		}
-		usuarioCuenta.setSaldoEnCuenta(saldoActualUsuario);
-		
-		usuarioCuenta = usuarioCuentaService.save(usuarioCuenta);
-		
+		Double saldoActualUsuario = 0d;
 		Cuenta cuentaObtenida = cuentaService.obtenerCuentaById(idCuentaActual);
 		
-		if(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta()) && !cuentaObtenida.getUsuarioPrincipal().equals(movimientoEditable.getUsuario())) {
-			uc.setUsuario(cuentaObtenida.getUsuarioPrincipal());
-			UsuarioCuenta usuarioCuentaPrincipal = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
-			saldoActualUsuario = usuarioCuentaPrincipal.getSaldoEnCuenta();
+		if(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta())) {
+			List<UsuarioCuenta> usuarioCuentaIguales = usuarioCuentaService.obtenerUsuariosIgualesByCuenta(idCuentaActual);
+			for (int i = 0; i < usuarioCuentaIguales.size(); i++) {
+				UsuarioCuenta usuarioCuentaActual = usuarioCuentaIguales.get(i);
+				saldoActualUsuario = usuarioCuentaActual.getSaldoEnCuenta();
+				
+				if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
+					saldoActualUsuario -= movimientoEditable.getCantidad();
+				}else {
+					saldoActualUsuario += movimientoEditable.getCantidad();
+				}
+				usuarioCuentaActual.setSaldoEnCuenta(saldoActualUsuario);
+				usuarioCuenta = usuarioCuentaService.save(usuarioCuentaActual);				
+			}
+		}else {
+			
+			saldoActualUsuario = usuarioCuenta.getSaldoEnCuenta();
 			
 			if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
 				saldoActualUsuario -= movimientoEditable.getCantidad();
 			}else {
 				saldoActualUsuario += movimientoEditable.getCantidad();
 			}
-			usuarioCuentaPrincipal.setSaldoEnCuenta(saldoActualUsuario);
-			usuarioCuenta = usuarioCuentaService.save(usuarioCuentaPrincipal);
+			usuarioCuenta.setSaldoEnCuenta(saldoActualUsuario);
+			
+			usuarioCuenta = usuarioCuentaService.save(usuarioCuenta);
 		}
 		
 		Double saldoCuentaNuevo = cuentaObtenida.getSaldo();
