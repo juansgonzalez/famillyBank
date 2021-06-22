@@ -2,7 +2,7 @@ package com.juanseb.bank.backend.payload.filter;
 
 import java.util.Date;
 
-import com.juanseb.bank.backend.model.TipoMovimiento;
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
 
 public class MovimientosFilter {
     private Long id;

@@ -2,6 +2,8 @@ package com.juanseb.bank.backend.model;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
+
 import javax.persistence.*;
 
 import java.time.Instant;

@@ -1,5 +1,6 @@
 package com.juanseb.bank.backend.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -31,6 +32,11 @@ public class UsuarioCuentaServiceImpl implements UsuarioCuentaService{
 	@Override
 	public boolean exist(UsuarioCuentaId id) {
 		return usuarioCuentaRepository.existsById(id);
+	}
+
+	@Override
+	public List<UsuarioCuenta> obtenerCuentasDeUsuario(Long idUsuario) {
+		return usuarioCuentaRepository.obtenerCuentasByUsuario(idUsuario);
 	}
 
 }

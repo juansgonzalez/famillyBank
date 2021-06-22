@@ -20,7 +20,7 @@ import com.juanseb.bank.backend.model.Categoria;
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Tarjeta;
-import com.juanseb.bank.backend.model.TipoMovimiento;
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
 import com.juanseb.bank.backend.payload.filter.MovimientoMesFilter;
 import com.juanseb.bank.backend.payload.filter.MovimientosFilter;
 import com.juanseb.bank.backend.repository.CategoriaRepository;
@@ -249,6 +249,11 @@ public class MovimientoServiceImpl implements MovimientoService {
 			throw new Exception();
 		}
 	}
+	
+	@Override
+	public Movimiento actualizarMovimiento(Movimiento movimiento) {
+		return movimientoRepository.save(movimiento);
+	}
 
 	@Override
 	public List<Movimiento> obtenerMovimientosDeCuentaOrdenadosFecha(Long idCuenta) {
@@ -299,6 +304,16 @@ public class MovimientoServiceImpl implements MovimientoService {
 		}	
 		return movimientoRepository.obtenerMovimientosDeCuentaByCuentaAhorro(idCuentaAhorro, dateInit, datefin);
 
+	}
+
+	@Override
+	public void eliminar(Movimiento movimiento) {
+		movimientoRepository.delete(movimiento);
+	}
+
+	@Override
+	public Movimiento obtenerMovimientoId(Long id) {
+		return movimientoRepository.findById(id).get();
 	}
 
 

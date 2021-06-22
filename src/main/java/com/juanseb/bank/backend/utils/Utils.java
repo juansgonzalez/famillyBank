@@ -11,10 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
-import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.model.UsuarioCuenta;
 import com.juanseb.bank.backend.model.UsuarioCuentaId;
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
 import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.vaadin.flow.component.UI;
@@ -134,6 +134,12 @@ public class Utils {
 		}
 		
 		
+	}
+	
+	public static String formatearSaldo(Double saldo) {
+		DecimalFormat df = new DecimalFormat("#.##");
+	    String saldoFormateado = df.format(saldo);
+		return saldoFormateado;
 	}
 
 }

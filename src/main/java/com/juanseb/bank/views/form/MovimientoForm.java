@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import com.juanseb.bank.backend.model.Categoria;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Tarjeta;
-import com.juanseb.bank.backend.model.TipoMovimiento;
 import com.juanseb.bank.backend.model.Usuario;
+import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
 import com.juanseb.bank.backend.service.CategoriaService;
 import com.juanseb.bank.backend.service.TarjetaService;
 import com.juanseb.bank.backend.service.UsuarioService;
@@ -43,6 +43,8 @@ public class MovimientoForm extends Dialog{
 	
 	private Long idCuenta;
 	
+	public boolean editar = false;
+	
 	
 	Binder<Movimiento> binder = new BeanValidationBinder<Movimiento>(Movimiento.class);
 
@@ -54,7 +56,7 @@ public class MovimientoForm extends Dialog{
     private NumberField cantidadMovimiento;
     private ComboBox<Tarjeta> tarjetaMovimiento;
     
-    public MovimientoForm(Long idCuenta, CategoriaService categoriaService, UsuarioService usuarioService, TarjetaService tarjetaService) {
+    public MovimientoForm(Long idCuenta, CategoriaService categoriaService, UsuarioService usuarioService, TarjetaService tarjetaService,Movimiento movimiento) {
     	super();
     	action = FORM_ACTION.CANCEL;
 		setCloseOnEsc(true);
@@ -70,6 +72,11 @@ public class MovimientoForm extends Dialog{
     	createMoviminetoEditor();
     	
     	createBinder();
+    	if(movimiento != null) {
+    		this.movimiento = movimiento;
+    		binder.readBean(this.movimiento);
+    		this.editar = true;
+    	}
     	
     	HorizontalLayout confirmLayout = confirmButtons();
     	
