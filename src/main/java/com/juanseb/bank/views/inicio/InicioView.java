@@ -127,7 +127,7 @@ public class InicioView extends HorizontalLayout {
 			VerticalLayout leftLayout = new VerticalLayout();
 			leftLayout.setWidth("60%");
 
-			H2 cuentaSaldo = new H2("Saldo en cuenta: "+ Utils.formatearSaldo(cuenta.getSaldo()));
+			H2 cuentaSaldo = new H2("Saldo de la cuenta: "+ Utils.formatearSaldo(cuenta.getSaldo()));
 			cuentaSaldo.setVisible(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta()) || Utils.isPrincipal(usuarioActual));
 			leftLayout.add(cuentaSaldo);
 			
