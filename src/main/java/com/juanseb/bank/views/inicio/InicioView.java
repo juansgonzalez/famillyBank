@@ -268,7 +268,7 @@ public class InicioView extends HorizontalLayout {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		
 		grid.addComponentColumn(c -> new IconoMovimientoTarjeta(c))
-		.setWidth("100px").setHeader("Tarjeta").setFlexGrow(1);
+		.setWidth("87px").setHeader("Tarjeta").setFlexGrow(1);
 		grid.addColumn(c -> c.getCantidad()+" €").setHeader("Cantidad").setFlexGrow(1);
         grid.addColumn(c -> c.getConcepto()).setHeader("Concepto").setFlexGrow(1);
         if(Utils.isPrincipal(usuarioActual)) {

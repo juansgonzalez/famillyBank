@@ -178,7 +178,7 @@ public class MovimientosView extends VerticalLayout {
 
         // indicamos columnas y el orden
         grid.setColumns();
-        grid.addComponentColumn(movimiento -> new IconoMovimientoTarjeta(movimiento)).setHeader("Tarjeta").setWidth("200px").setFlexGrow(0);
+        grid.addComponentColumn(movimiento -> new IconoMovimientoTarjeta(movimiento)).setHeader("Tarjeta").setWidth("150px").setFlexGrow(0);
         grid.addColumn(movimiento -> movimiento.getCantidad()+" €").setHeader("Cantidad").setWidth("125px").setFlexGrow(0).setSortable(true);
         grid.addColumn(movimiento -> movimiento.getConcepto()).setHeader("Concepto").setFlexGrow(1).setSortable(true);
         grid.addColumn(movimiento -> movimiento.getCategoria().getNombre()).setHeader("Categoria").setFlexGrow(1).setSortable(true);
