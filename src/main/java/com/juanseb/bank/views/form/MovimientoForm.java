@@ -90,8 +90,7 @@ public class MovimientoForm extends Dialog{
     	botones.setWidthFull();
     	
     	// Create the cancel button with the click event
-    	Button botonCancelar = new Button("Cancel", ClickEvent ->{
-			// set the action of the form to save
+    	Button botonCancelar = new Button("Cancelar", ClickEvent ->{
     		setAction(FORM_ACTION.CANCEL);
 			close();
     	});
@@ -104,10 +103,9 @@ public class MovimientoForm extends Dialog{
     	
 
     	// Create the Save button with the click event
-    	Button botonAceptar = new Button("Save", ClickEvent ->{
+    	Button botonAceptar = new Button("Guardar", ClickEvent ->{
     			// fill the product with the new data
 				if(binder.writeBeanIfValid(this.movimiento)) {
-					// set the action of the form to save
 					setAction(FORM_ACTION.SAVE);
 					
 					// close the Dialog

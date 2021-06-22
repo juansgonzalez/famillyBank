@@ -7,11 +7,18 @@ import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Usuario;
 import com.juanseb.bank.backend.model.UsuarioCuenta;
 import com.juanseb.bank.backend.model.UsuarioCuentaId;
+import com.juanseb.bank.backend.model.enumerado.TipoUsuarioCuenta;
 import com.juanseb.bank.backend.service.MovimientoService;
 import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
 import com.juanseb.bank.backend.utils.Utils;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.dialog.GeneratedVaadinDialog;
+import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -21,11 +28,40 @@ public class CardUsuarioSelect extends ClickableCard{
 	
 	private static final long serialVersionUID = 4194699125726794904L;
 	
+	private static TipoUsuarioCuenta tipo = TipoUsuarioCuenta.SUBCUENTA;
 
 	public CardUsuarioSelect(Cuenta cuenta,Usuario usuario, UsuarioService usuarioService, MovimientoService movimientoService, UsuarioCuentaService usuarioCuentaService) {
 		super(event -> {
-        	addUsuarioCuenta(usuarioService,usuarioCuentaService,usuario,cuenta);
-        	UI.getCurrent().getPage().reload();
+			Dialog dialogoTipo = new Dialog();
+			Button igual = new Button(TipoUsuarioCuenta.IGUAL.toString(),e->{
+				tipo = TipoUsuarioCuenta.IGUAL;
+				dialogoTipo.close();
+			});
+			Button subCuenta = new Button(TipoUsuarioCuenta.SUBCUENTA.toString(), e ->{
+				tipo = TipoUsuarioCuenta.SUBCUENTA;
+				dialogoTipo.close();
+			});
+			subCuenta.getElement().getStyle().set("margin-left", "10px");
+			VerticalLayout tipoCuenta = new VerticalLayout();
+			tipoCuenta.setWidthFull();
+			tipoCuenta.add(new H3("Tipo de relacion"),new HorizontalLayout(igual,subCuenta));
+			dialogoTipo.add(tipoCuenta);
+			dialogoTipo.setCloseOnEsc(false);
+			dialogoTipo.setCloseOnOutsideClick(false);
+			dialogoTipo.addOpenedChangeListener(new ComponentEventListener<GeneratedVaadinDialog.OpenedChangeEvent<Dialog>>() {
+
+				private static final long serialVersionUID = 7681516423230679676L;
+
+				@Override
+				public void onComponentEvent(OpenedChangeEvent<Dialog> event) {
+					if(!event.isOpened()) {
+						addUsuarioCuenta(usuarioService,usuarioCuentaService,usuario,cuenta);
+						UI.getCurrent().getPage().reload();											
+					}
+				}				
+				
+			});
+        	dialogoTipo.open();
         });
 
         // estilo del card
@@ -82,7 +118,16 @@ public class CardUsuarioSelect extends ClickableCard{
 		
 		uc.setId(ucId);
 		if(!usuarioCuentaService.exist(ucId)) {
-			uc.setSaldoEnCuenta(0d);
+			if(TipoUsuarioCuenta.SUBCUENTA.equals(tipo)) {
+				uc.setSaldoEnCuenta(0d);
+			}else {
+				UsuarioCuentaId ucPrincipalId = new UsuarioCuentaId(cuenta, usuario);
+				ucPrincipalId.setUsuario(cuenta.getUsuarioPrincipal());
+				ucPrincipalId.setCuenta(cuenta);
+				UsuarioCuenta usuarioCuenta = usuarioCuentaService.obtenerDatosUsuarioCuenta(ucPrincipalId).get();
+				uc.setSaldoEnCuenta(usuarioCuenta.getSaldoEnCuenta());				
+			}
+			uc.setTipoUsuarioCuenta(tipo);
 			usuarioCuentaService.save(uc);			
 		}
 	}
