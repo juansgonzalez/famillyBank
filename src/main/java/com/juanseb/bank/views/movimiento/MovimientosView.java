@@ -270,12 +270,16 @@ public class MovimientosView extends VerticalLayout {
 		UsuarioCuenta usuarioCuentaPrincipal = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
 		
 		if(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta())) {
-			if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
-				usuarioCuentaPrincipal.setSaldoEnCuenta(usuarioCuentaPrincipal.getSaldoEnCuenta() + movimientoDeshacer.getCantidad());
-			}else {
-				usuarioCuentaPrincipal.setSaldoEnCuenta(usuarioCuentaPrincipal.getSaldoEnCuenta() - movimientoDeshacer.getCantidad());									
-			}			
-			usuarioCuentaService.save(usuarioCuentaPrincipal);
+			List<UsuarioCuenta> usuarioCuentaIguales = usuarioCuentaService.obtenerUsuariosIgualesByCuenta(idCuentaActual);
+			for (int i = 0; i < usuarioCuentaIguales.size(); i++) {
+				UsuarioCuenta usuarioCuentaActual = usuarioCuentaIguales.get(i);
+				if(TipoMovimiento.GASTO.equals(movimientoDeshacer.getTipo())) {
+					usuarioCuentaActual.setSaldoEnCuenta(usuarioCuentaPrincipal.getSaldoEnCuenta() + movimientoDeshacer.getCantidad());
+				}else {
+					usuarioCuentaActual.setSaldoEnCuenta(usuarioCuentaPrincipal.getSaldoEnCuenta() - movimientoDeshacer.getCantidad());									
+				}			
+				usuarioCuentaService.save(usuarioCuentaActual);
+			}
 		}
 		
 		
@@ -318,18 +322,20 @@ public class MovimientosView extends VerticalLayout {
 		
 		Cuenta cuentaObtenida = cuentaService.obtenerCuentaById(idCuentaActual);
 		
-		if(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta()) && !cuentaObtenida.getUsuarioPrincipal().equals(movimientoEditable.getUsuario())) {
-			uc.setUsuario(cuentaObtenida.getUsuarioPrincipal());
-			UsuarioCuenta usuarioCuentaPrincipal = usuarioCuentaService.obtenerDatosUsuarioCuenta(uc).get();
-			saldoActualUsuario = usuarioCuentaPrincipal.getSaldoEnCuenta();
-			
-			if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
-				saldoActualUsuario -= movimientoEditable.getCantidad();
-			}else {
-				saldoActualUsuario += movimientoEditable.getCantidad();
+		if(TipoUsuarioCuenta.IGUAL.equals(usuarioCuenta.getTipoUsuarioCuenta())) {
+			List<UsuarioCuenta> usuarioCuentaIguales = usuarioCuentaService.obtenerUsuariosIgualesByCuenta(idCuentaActual);
+			for (int i = 0; i < usuarioCuentaIguales.size(); i++) {
+				UsuarioCuenta usuarioCuentaActual = usuarioCuentaIguales.get(i);
+				saldoActualUsuario = usuarioCuentaActual.getSaldoEnCuenta();
+				
+				if(movimientoEditable.getTipo().equals(TipoMovimiento.GASTO)) {
+					saldoActualUsuario -= movimientoEditable.getCantidad();
+				}else {
+					saldoActualUsuario += movimientoEditable.getCantidad();
+				}
+				usuarioCuentaActual.setSaldoEnCuenta(saldoActualUsuario);
+				usuarioCuenta = usuarioCuentaService.save(usuarioCuentaActual);				
 			}
-			usuarioCuentaPrincipal.setSaldoEnCuenta(saldoActualUsuario);
-			usuarioCuenta = usuarioCuentaService.save(usuarioCuentaPrincipal);
 		}
 		
 		Double saldoCuentaNuevo = cuentaObtenida.getSaldo();

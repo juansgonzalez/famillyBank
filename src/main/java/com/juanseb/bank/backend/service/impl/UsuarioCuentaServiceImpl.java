@@ -39,4 +39,9 @@ public class UsuarioCuentaServiceImpl implements UsuarioCuentaService{
 		return usuarioCuentaRepository.obtenerCuentasByUsuario(idUsuario);
 	}
 
+	@Override
+	public List<UsuarioCuenta> obtenerUsuariosIgualesByCuenta(Long idCuentaActual) {
+		return usuarioCuentaRepository.obtenerUsuarioCuentaIgualesByCuenta(idCuentaActual);
+	}
+
 }
