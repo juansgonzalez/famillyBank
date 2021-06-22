@@ -14,7 +14,7 @@ public interface UsuarioCuentasRepository extends JpaRepository<UsuarioCuenta, U
 	@Query("SELECT uc FROM UsuarioCuenta uc WHERE uc.id.usuario.id =:idUsuario")
 	List<UsuarioCuenta> obtenerCuentasByUsuario(@Param("idUsuario")Long idUsuario);
 
-	@Query("SELECT uc FROM UsuarioCuenta uc WHERE uc.id.cuenta.id =:idCuenta && uc.tipoUsuarioCuenta = 1")
+	@Query("SELECT uc FROM UsuarioCuenta uc WHERE uc.id.cuenta.id =:idCuenta AND uc.tipoUsuarioCuenta = 1")
 	List<UsuarioCuenta> obtenerUsuarioCuentaIgualesByCuenta(@Param("idCuenta")Long idCuentaActual);
 	
 	
