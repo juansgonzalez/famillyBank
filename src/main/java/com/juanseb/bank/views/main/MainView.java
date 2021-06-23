@@ -217,6 +217,9 @@ public class MainView extends AppLayout {
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.setOpenOnClick(true);
         contextMenu.setTarget(hl);
+        contextMenu.addItem("Mi Perfil", e -> {
+        	contextMenu.getUI().ifPresent(ui -> ui.getPage().setLocation("/perfil"));
+        });
 
         contextMenu.addItem("Cambiar Cuenta", e -> {
         	listaUsuarioCuenta = this.usuarioCuentaService.obtenerCuentasDeUsuario(usuario.getId());

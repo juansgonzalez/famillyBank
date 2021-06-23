@@ -72,14 +72,14 @@ public class MovimientoCuentaAhorroForm extends Dialog{
 		tipoMovimineto.setItems(TipoMovimiento.INGRESO,TipoMovimiento.GASTO);
 		tipoMovimineto.setValue(TipoMovimiento.GASTO);
         tipoMovimineto.setRequiredIndicatorVisible(true);
-        setColspan(tipoMovimineto, 1);
+        Utils.setColspan(tipoMovimineto, 1);
         binder.forField(tipoMovimineto).asRequired("El tipo de movimiento es obligatoria")
         .bind(Movimiento::getTipo,Movimiento::setTipo);
 
 		conceptoMovimiento = new TextField("Concepto");
 		conceptoMovimiento.setRequired(false);
 		conceptoMovimiento.setId("concepto");
-        setColspan(conceptoMovimiento, 2);
+		Utils.setColspan(conceptoMovimiento, 2);
         binder.forField(conceptoMovimiento)
         .bind(Movimiento::getConcepto,Movimiento::setConcepto);
         
@@ -89,7 +89,7 @@ public class MovimientoCuentaAhorroForm extends Dialog{
         cantidadMovimiento.setRequiredIndicatorVisible(true);
         binder.forField(cantidadMovimiento).asRequired("La Cantidad en obligatoria")
         	.bind(Movimiento::getCantidad,Movimiento::setCantidad);
-        setColspan(cantidadMovimiento, 1);
+        Utils.setColspan(cantidadMovimiento, 1);
         
         categoriaMovimiento = new ComboBox<Categoria>();
         categoriaMovimiento.setId("categoria");
@@ -99,14 +99,14 @@ public class MovimientoCuentaAhorroForm extends Dialog{
         categoriaMovimiento.setRequiredIndicatorVisible(true);
         categoriaMovimiento.setVisible(false);
         categoriaMovimiento.setValue(categoriaService.obtenerCategoriaById(6l).get());
-        setColspan(categoriaMovimiento, 1);
+        Utils.setColspan(categoriaMovimiento, 1);
         binder.forField(categoriaMovimiento).asRequired("La categoria es obligatoria")
         	.bind(Movimiento::getCategoria,Movimiento::setCategoria);
         
         fechaMovimiento = new DatePicker();
         fechaMovimiento.setLabel("Fecha");
         fechaMovimiento.setValue(LocalDate.now());
-        setColspan(fechaMovimiento, 1);
+        Utils.setColspan(fechaMovimiento, 1);
         fechaMovimiento.setRequiredIndicatorVisible(true);
         binder.forField(fechaMovimiento).asRequired("La fecha el obligatoria")
         	.bind(Movimiento::getFechaLocal,Movimiento::setFechaLocal);
@@ -116,10 +116,7 @@ public class MovimientoCuentaAhorroForm extends Dialog{
         movimientoData.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 3));
 
 	}
-	
-	private void setColspan(Component component, int colspan) {
-		component.getElement().setAttribute("colspan", Integer.toString(colspan));
-	}
+
 	
 	private HorizontalLayout confirmButtons() {
 		// Initialize the layout and setting some properties

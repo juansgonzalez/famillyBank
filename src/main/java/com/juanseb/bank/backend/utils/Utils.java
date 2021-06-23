@@ -36,6 +36,7 @@ import com.juanseb.bank.backend.model.enumerado.TipoMovimiento;
 import com.juanseb.bank.backend.pojo.ObjectImg;
 import com.juanseb.bank.backend.service.UsuarioCuentaService;
 import com.juanseb.bank.backend.service.UsuarioService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 
 public class Utils {
@@ -205,6 +206,15 @@ public class Utils {
 			return null;
 		}
 		
+	}
+	
+	/**
+	 * Set the col span from the fields into the form
+	 * @param component component to set the col span
+	 * @param colspan size of the col span
+	 */
+	public static void setColspan(Component component, int colspan) {
+		component.getElement().setAttribute("colspan", Integer.toString(colspan));
 	}
 
 }
