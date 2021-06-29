@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.juanseb.bank.backend.model.Cuenta;
 import com.juanseb.bank.backend.model.Movimiento;
 import com.juanseb.bank.backend.model.Usuario;
@@ -197,12 +198,13 @@ public class Utils {
 			
 			// print result
 			String json = response.toString();
+			Gson gson = new Gson();
 			
-			ObjectMapper mapper = new ObjectMapper();
-			ObjectImg img = mapper.readValue(json, ObjectImg.class);
+			ObjectImg img = gson.fromJson(json, ObjectImg.class);
 			httpClient.close();
 			return img.getData().getUrl();
 		} catch (IOException e) {
+			System.out.println(e.getMessage());
 			return null;
 		}
 		

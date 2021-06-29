@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Generated("jsonschema2pojo")
-public class Image {
+public class Medium {
 
     @SerializedName("filename")
     @Expose
@@ -28,7 +28,7 @@ public class Image {
      * No args constructor for use in serialization
      * 
      */
-    public Image() {
+    public Medium() {
     }
 
     /**
@@ -39,7 +39,7 @@ public class Image {
      * @param name
      * @param url
      */
-    public Image(String filename, String name, String mime, String extension, String url) {
+    public Medium(String filename, String name, String mime, String extension, String url) {
         super();
         this.filename = filename;
         this.name = name;
@@ -56,7 +56,7 @@ public class Image {
         this.filename = filename;
     }
 
-    public Image withFilename(String filename) {
+    public Medium withFilename(String filename) {
         this.filename = filename;
         return this;
     }
@@ -69,7 +69,7 @@ public class Image {
         this.name = name;
     }
 
-    public Image withName(String name) {
+    public Medium withName(String name) {
         this.name = name;
         return this;
     }
@@ -82,7 +82,7 @@ public class Image {
         this.mime = mime;
     }
 
-    public Image withMime(String mime) {
+    public Medium withMime(String mime) {
         this.mime = mime;
         return this;
     }
@@ -95,7 +95,7 @@ public class Image {
         this.extension = extension;
     }
 
-    public Image withExtension(String extension) {
+    public Medium withExtension(String extension) {
         this.extension = extension;
         return this;
     }
@@ -108,7 +108,7 @@ public class Image {
         this.url = url;
     }
 
-    public Image withUrl(String url) {
+    public Medium withUrl(String url) {
         this.url = url;
         return this;
     }
@@ -116,7 +116,7 @@ public class Image {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Image.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(Medium.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("filename");
         sb.append('=');
         sb.append(((this.filename == null)?"<null>":this.filename));
@@ -161,10 +161,10 @@ public class Image {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Image) == false) {
+        if ((other instanceof Medium) == false) {
             return false;
         }
-        Image rhs = ((Image) other);
+        Medium rhs = ((Medium) other);
         return ((((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.extension == rhs.extension)||((this.extension!= null)&&this.extension.equals(rhs.extension))))&&((this.filename == rhs.filename)||((this.filename!= null)&&this.filename.equals(rhs.filename))))&&((this.url == rhs.url)||((this.url!= null)&&this.url.equals(rhs.url))))&&((this.mime == rhs.mime)||((this.mime!= null)&&this.mime.equals(rhs.mime))));
     }
 
