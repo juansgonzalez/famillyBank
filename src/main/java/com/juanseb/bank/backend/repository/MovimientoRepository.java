@@ -34,11 +34,11 @@ public interface MovimientoRepository extends JpaRepository<Movimiento, Long> {
 	@Query("select m from Movimiento m where m.cuenta.id = :idCuenta AND m.cuentaAhorro IS NULL AND  m.fecha BETWEEN :fechaInit AND :fechaFin ORDER BY m.fecha")
 	List<Movimiento> obtenerMovimientosDeCuentaFechas(@Param("idCuenta")Long idCuenta, @Param("fechaInit") Date dateInit,@Param("fechaFin") Date datefin);
 
-	@Query("SELECT m FROM Movimiento m WHERE m.cuenta.id= :idCuenta AND m.cuentaAhorro IS NULL ORDER BY m.fecha DESC, m.id")
-	List<Movimiento> obtenerMovimientosDeCuentaOrdenadosCuenta(Long idCuenta);
-
 	@Query("SELECT m FROM Movimiento m WHERE m.tarjeta.id= :idTarjeta AND m.cuentaAhorro IS NULL AND m.usuario.id =:idUsuario")
 	List<Movimiento> obtenerMovimientosDeTarjetaByUsuario(@Param("idTarjeta")Long idTarjeta, @Param("idUsuario")Long idUsuario);
+
+	@Query("SELECT m FROM Movimiento m WHERE m.cuenta.id= :idCuenta AND m.cuentaAhorro IS NULL ORDER BY m.fecha DESC, m.id DESC")
+	List<Movimiento> obtenerMovimientosDeCuentaOrdenadosCuenta(Long idCuenta);
 
 	@Query("SELECT m FROM Movimiento m WHERE m.cuenta.id= :idCuenta AND m.cuentaAhorro IS NULL AND m.usuario.id =:idUsuario ORDER BY m.fecha, m.id DESC")
 	List<Movimiento> obtenerMovimientosDeCuentaByUsuarioOrdenadosCuenta(@Param("idCuenta")Long idCuenta, @Param("idUsuario")Long idUsuario);
