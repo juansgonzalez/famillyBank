@@ -25,151 +25,156 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 
-public class MovimientoCuentaAhorroForm extends Dialog{
+public class MovimientoCuentaAhorroForm extends Dialog {
 
 	private static final long serialVersionUID = 4578892836029812434L;
-	
+
 	private FORM_ACTION action = FORM_ACTION.CANCEL;
-	
+
 	private UsuarioService usuarioService;
 	private CategoriaService categoriaService;
-	
+
 	private Movimiento movimiento = new Movimiento();;
 	private Usuario usuario;
 	private CuentaAhorro cuentaAhorro;
 	
+	public boolean editar = false;
+
 	private FormLayout movimientoData = new FormLayout();
-	
+
 	Binder<Movimiento> binder = new BeanValidationBinder<Movimiento>(Movimiento.class);
 
 	private ComboBox<TipoMovimiento> tipoMovimineto;
-    private TextField conceptoMovimiento;
+	private TextField conceptoMovimiento;
 	private ComboBox<Categoria> categoriaMovimiento;
 	private DatePicker fechaMovimiento;
-    private NumberField cantidadMovimiento;
+	private NumberField cantidadMovimiento;
 
-	public MovimientoCuentaAhorroForm(CuentaAhorro cuentaAhorro, UsuarioService usuarioService, CategoriaService categoriaService) {
+	public MovimientoCuentaAhorroForm(CuentaAhorro cuentaAhorro, UsuarioService usuarioService,
+			CategoriaService categoriaService, Movimiento movimiento) {
 		super();
 		this.usuarioService = usuarioService;
 		this.categoriaService = categoriaService;
 		init(cuentaAhorro);
 		binder.bindInstanceFields(movimientoData);
-		add(movimientoData,confirmButtons());
+		if (movimiento != null) {
+			this.movimiento = movimiento;
+    		binder.readBean(this.movimiento);
+    		this.editar = true;
+		}else {
+			this.movimiento = new Movimiento();
+		}
+		add(movimientoData, confirmButtons());
 	}
 
 	private void init(CuentaAhorro cuentaAhorro) {
-    	action = FORM_ACTION.CANCEL;
+		action = FORM_ACTION.CANCEL;
 		setCloseOnEsc(true);
 		setCloseOnOutsideClick(false);
-		
-		
+
 		this.cuentaAhorro = cuentaAhorro;
 		this.usuario = Utils.getCurrentUser(usuarioService).get();
-		
+
 		tipoMovimineto = new ComboBox<TipoMovimiento>();
 		tipoMovimineto.setId("tipo");
 		tipoMovimineto.setLabel("Tipo Movimineto");
-		tipoMovimineto.setItems(TipoMovimiento.INGRESO,TipoMovimiento.GASTO);
+		tipoMovimineto.setItems(TipoMovimiento.INGRESO, TipoMovimiento.GASTO);
 		tipoMovimineto.setValue(TipoMovimiento.GASTO);
-        tipoMovimineto.setRequiredIndicatorVisible(true);
-        setColspan(tipoMovimineto, 1);
-        binder.forField(tipoMovimineto).asRequired("El tipo de movimiento es obligatoria")
-        .bind(Movimiento::getTipo,Movimiento::setTipo);
+		tipoMovimineto.setRequiredIndicatorVisible(true);
+		setColspan(tipoMovimineto, 1);
+		binder.forField(tipoMovimineto).asRequired("El tipo de movimiento es obligatoria").bind(Movimiento::getTipo,
+				Movimiento::setTipo);
 
 		conceptoMovimiento = new TextField("Concepto");
 		conceptoMovimiento.setRequired(false);
 		conceptoMovimiento.setId("concepto");
-        setColspan(conceptoMovimiento, 2);
-        binder.forField(conceptoMovimiento)
-        .bind(Movimiento::getConcepto,Movimiento::setConcepto);
-        
-        cantidadMovimiento = new NumberField("Cantidad");
-        cantidadMovimiento.setId("cantidad");
-        cantidadMovimiento.setPrefixComponent(new Icon(VaadinIcon.EURO));
-        cantidadMovimiento.setRequiredIndicatorVisible(true);
-        binder.forField(cantidadMovimiento).asRequired("La Cantidad en obligatoria")
-        	.bind(Movimiento::getCantidad,Movimiento::setCantidad);
-        setColspan(cantidadMovimiento, 1);
-        
-        categoriaMovimiento = new ComboBox<Categoria>();
-        categoriaMovimiento.setId("categoria");
-        categoriaMovimiento.setLabel("Categoria");
-        categoriaMovimiento.setItemLabelGenerator(Categoria::getNombre);
-        categoriaMovimiento.setItems(this.categoriaService.obtenerTodasCategorias());
-        categoriaMovimiento.setRequiredIndicatorVisible(true);
-        categoriaMovimiento.setVisible(false);
-        categoriaMovimiento.setValue(categoriaService.obtenerCategoriaById(6l).get());
-        setColspan(categoriaMovimiento, 1);
-        binder.forField(categoriaMovimiento).asRequired("La categoria es obligatoria")
-        	.bind(Movimiento::getCategoria,Movimiento::setCategoria);
-        
-        fechaMovimiento = new DatePicker();
-        fechaMovimiento.setLabel("Fecha");
-        fechaMovimiento.setValue(LocalDate.now());
-        setColspan(fechaMovimiento, 1);
-        fechaMovimiento.setRequiredIndicatorVisible(true);
-        binder.forField(fechaMovimiento).asRequired("La fecha el obligatoria")
-        	.bind(Movimiento::getFechaLocal,Movimiento::setFechaLocal);
-        
-        movimientoData = new FormLayout(tipoMovimineto,conceptoMovimiento,cantidadMovimiento,categoriaMovimiento,
-        		fechaMovimiento);
-        movimientoData.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 3));
+		setColspan(conceptoMovimiento, 2);
+		binder.forField(conceptoMovimiento).bind(Movimiento::getConcepto, Movimiento::setConcepto);
+
+		cantidadMovimiento = new NumberField("Cantidad");
+		cantidadMovimiento.setId("cantidad");
+		cantidadMovimiento.setPrefixComponent(new Icon(VaadinIcon.EURO));
+		cantidadMovimiento.setRequiredIndicatorVisible(true);
+		binder.forField(cantidadMovimiento).asRequired("La Cantidad en obligatoria").bind(Movimiento::getCantidad,
+				Movimiento::setCantidad);
+		setColspan(cantidadMovimiento, 1);
+
+		categoriaMovimiento = new ComboBox<Categoria>();
+		categoriaMovimiento.setId("categoria");
+		categoriaMovimiento.setLabel("Categoria");
+		categoriaMovimiento.setItemLabelGenerator(Categoria::getNombre);
+		categoriaMovimiento.setItems(this.categoriaService.obtenerTodasCategorias());
+		categoriaMovimiento.setRequiredIndicatorVisible(true);
+		categoriaMovimiento.setVisible(false);
+		categoriaMovimiento.setValue(categoriaService.obtenerCategoriaById(6l).get());
+		setColspan(categoriaMovimiento, 1);
+		binder.forField(categoriaMovimiento).asRequired("La categoria es obligatoria").bind(Movimiento::getCategoria,
+				Movimiento::setCategoria);
+
+		fechaMovimiento = new DatePicker();
+		fechaMovimiento.setLabel("Fecha");
+		fechaMovimiento.setValue(LocalDate.now());
+		setColspan(fechaMovimiento, 1);
+		fechaMovimiento.setRequiredIndicatorVisible(true);
+		binder.forField(fechaMovimiento).asRequired("La fecha el obligatoria").bind(Movimiento::getFechaLocal,
+				Movimiento::setFechaLocal);
+
+		movimientoData = new FormLayout(tipoMovimineto, conceptoMovimiento, cantidadMovimiento, categoriaMovimiento,
+				fechaMovimiento);
+		movimientoData.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 3));
 
 	}
-	
+
 	private void setColspan(Component component, int colspan) {
 		component.getElement().setAttribute("colspan", Integer.toString(colspan));
 	}
-	
+
 	private HorizontalLayout confirmButtons() {
 		// Initialize the layout and setting some properties
 		HorizontalLayout botones = new HorizontalLayout();
-    	botones.setWidthFull();
-    	
-    	// Create the cancel button with the click event
-    	Button botonCancelar = new Button("Cancel", ClickEvent ->{
+		botones.setWidthFull();
+
+		// Create the cancel button with the click event
+		Button botonCancelar = new Button("Cancel", ClickEvent -> {
 			// set the action of the form to save
-    		setAction(FORM_ACTION.CANCEL);
+			setAction(FORM_ACTION.CANCEL);
 			close();
-    	});
-    	
-    	// Set some style to the cancel button
-    	botonCancelar.getElement().getStyle().set("margin-top", "auto");
-    	botonCancelar.getElement().getStyle().set("margin-right", "auto");
-    	botonCancelar.getElement().getStyle().set("cursor", "pointer");
-    	botonCancelar.getElement().getStyle().set("color", "red");
-    	
+		});
 
-    	// Create the Save button with the click event
-    	Button botonAceptar = new Button("Save", ClickEvent ->{
-    			// fill the product with the new data
-				if(binder.writeBeanIfValid(this.movimiento)) {
-					this.movimiento.setCuentaAhorro(this.cuentaAhorro);
-					this.movimiento.setUsuario(this.usuario);
-					this.movimiento.setCuenta(cuentaAhorro.getCuenta());
-					this.movimiento.setSaldoActual(cuentaAhorro.getCuenta().getSaldo());
-					// set the action of the form to save
-					setAction(FORM_ACTION.SAVE);
-					
-					// close the Dialog
-					close();					
-				}
-				
-		   
-    	});
-    	
-    	// Set some style to the cancel button
-    	botonAceptar.getElement().getStyle().set("margin-left", "auto");
-    	botonAceptar.getElement().getStyle().set("cursor", "pointer");
-    	botonAceptar.getElement().getStyle().set("color", "green");
+		// Set some style to the cancel button
+		botonCancelar.getElement().getStyle().set("margin-top", "auto");
+		botonCancelar.getElement().getStyle().set("margin-right", "auto");
+		botonCancelar.getElement().getStyle().set("cursor", "pointer");
+		botonCancelar.getElement().getStyle().set("color", "red");
 
-    	// Add the buttons to the layout
-    	botones.add(botonCancelar);
-    	botones.add(botonAceptar);
-    	
+		// Create the Save button with the click event
+		Button botonAceptar = new Button("Save", ClickEvent -> {
+			// fill the product with the new data
+			if (binder.writeBeanIfValid(this.movimiento)) {
+				this.movimiento.setCuentaAhorro(this.cuentaAhorro);
+				this.movimiento.setUsuario(this.usuario);
+				this.movimiento.setCuenta(cuentaAhorro.getCuenta());
+				this.movimiento.setSaldoActual(cuentaAhorro.getCuenta().getSaldo());
+				// set the action of the form to save
+				setAction(FORM_ACTION.SAVE);
+
+				// close the Dialog
+				close();
+			}
+
+		});
+
+		// Set some style to the cancel button
+		botonAceptar.getElement().getStyle().set("margin-left", "auto");
+		botonAceptar.getElement().getStyle().set("cursor", "pointer");
+		botonAceptar.getElement().getStyle().set("color", "green");
+
+		// Add the buttons to the layout
+		botones.add(botonCancelar);
+		botones.add(botonAceptar);
+
 		return botones;
 	}
-
 
 	public FORM_ACTION getAction() {
 		return action;
@@ -187,5 +192,4 @@ public class MovimientoCuentaAhorroForm extends Dialog{
 		this.movimiento = movimiento;
 	}
 
-	
 }
