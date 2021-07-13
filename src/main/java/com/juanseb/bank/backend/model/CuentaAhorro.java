@@ -14,6 +14,20 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+//	CREATE TABLE `cuenta_ahorro` (
+//			  `id` bigint NOT NULL AUTO_INCREMENT,
+//			  `nombre` varchar(255) DEFAULT NULL,
+//			  `saldo` double NOT NULL,
+//			  `cuenta_id` bigint DEFAULT NULL,
+//			  PRIMARY KEY (`id`),
+//			  KEY `FK8xyuqxxa1cfe4roke49sm1gyg` (`cuenta_id`),
+//			  CONSTRAINT `FK8xyuqxxa1cfe4roke49sm1gyg` FOREIGN KEY (`cuenta_id`) REFERENCES `cuenta` (`id`)
+//			);
+//
+//			ALTER TABLE `movimiento` ADD COLUMN `cuenta_ahorro_id` bigint DEFAULT NULL;
+//
+//			ALTER TABLE `movimiento`
+//			  ADD CONSTRAINT `FK4ea11fe7p3xa1kwwmdgi9f2fi` FOREIGN KEY (`cuenta_ahorro_id`) REFERENCES `cuenta_ahorro` (`id`);
 @Entity
 public class CuentaAhorro {
 	
