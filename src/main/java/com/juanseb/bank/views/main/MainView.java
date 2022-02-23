@@ -102,10 +102,12 @@ public class MainView extends AppLayout {
         			UI.getCurrent().getSession().setAttribute("idCuenta", cuenta.getId());
         			UI.getCurrent().getSession().setAttribute("idUsuarioPrincipal", cuenta.getUsuarioPrincipal().getId()); 
         			UI.getCurrent().getPage().reload();
-        		}else {
-        			Notification.show("Error al obtener Cuentas del usuario.");
-        		}        		
-        	}else {
+        		}else if(listaUsuarioCuenta.size() == 0){
+                    Notification.show("No tienes cuentas creadas en la aplicacion.");
+        		}else{
+                    Notification.show("Error al obtener Cuentas del usuario.");
+                }
+            }else {
         		this.idUsuarioPrincipal = (long) UI.getCurrent().getSession().getAttribute("idUsuarioPrincipal");
 
                 setPrimarySection(Section.DRAWER);
