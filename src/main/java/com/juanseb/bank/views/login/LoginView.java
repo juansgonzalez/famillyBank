@@ -28,7 +28,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         login.setForgotPasswordButtonVisible(false);  // not show link forgot password
         
         HorizontalLayout icon = new HorizontalLayout();
-        Image imgLogo1 = new Image("images/logoImagin.png", "Imagin Bank");
+        Image imgLogo1 = new Image("images/bankname.png", "Gonzalez Sanchez");
         imgLogo1.setWidth("250px");
         imgLogo1.setHeight("200px");
         icon.add(imgLogo1);
